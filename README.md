@@ -9,7 +9,7 @@ Este proyecto es el backend para la maqueta y prototipo inicial de una plataform
 - **Universidad:** Broward International University
 - **Maestría:** Ciencias de Ingeniería de Software Informático
 - **Curso:** PROGRAMMING THE INTERNET (CSE642)
-- **Tarea:** Tarea: Asignación No. 2 Desarrollo del Backend para la Plataforma eCommerce. Implementación de una API Restful utilizando Ruby on Rails.
+- **Tarea:** Desarrollo del Backend para la Plataforma eCommerce. Implementación de una API Restful utilizando Ruby on Rails.
 - **Profesor:** PHD Cristian Gabriel Zambrano Vega
 - **Alumno:** Ing. Héctor Cristóbal Lazarte
 
@@ -19,6 +19,35 @@ El objetivo de este proyecto es desarrollar el backend para una plataforma eComm
 
 - **Ruby on Rails**: Para la construcción de la API Restful.
 - **ORACLE**: Para la base de datos.
+
+## Detalles de Implementación
+
+### Modelos
+
+Descripción de los modelos utilizados en el proyecto:
+
+- **Profile**: Utilizado para almacenar información del usuario como nombre, email, etc. Relacionado con otros modelos como `Orders` para representar pedidos realizados por el usuario.
+- **Order**: Representa un pedido, asociado a un `Profile` y contiene detalles como estado del pedido, total, y fecha.
+- **RelatedProducts**: Modelo para representar productos relacionados a un producto principal.
+
+### Vistas
+
+Descripción de cómo se implementan las vistas y qué tecnologías se utilizan [Frontend](https://github.com/hclazarte/hclp-online).
+
+### Autenticación
+
+Detalles sobre cómo se implementa la autenticación:
+
+- Utiliza `Doorkeeper` para OAuth 2.0, permitiendo autenticación segura y proporcionando tokens a los clientes.
+- La configuración incluye scopes específicos para proteger los endpoints y asegurar que los tokens sean generados con los permisos correctos.
+
+### Seguridad
+
+Medidas de seguridad implementadas:
+
+- Uso de `bcrypt` para hashing de contraseñas, asegurando que las contraseñas de los usuarios no se almacenen en texto plano.
+- Configuración de políticas CORS para limitar los dominios que pueden interactuar con la API.
+- Validaciones estrictas en los modelos para prevenir inyecciones SQL y otros ataques comunes.
 
 ## Instalación y Configuración
 
