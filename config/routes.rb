@@ -6,19 +6,18 @@ Rails.application.routes.draw do
   # Rutas de la API
   namespace :api do
     namespace :v1 do
-      get 'orders/index'
-      get 'orders/show'
-      get 'orders/create'
-      get 'orders/update'
-      get 'orders/destroy'
-      # Ruta de me devuelve el usuario conectado
-      get 'me', to: 'me#show'
-      resource :me, only: [:show]
-      # Rutas de profile
-      get 'current_profile', to: 'profiles#current_profile'
-      resources :profiles, only: [:create, :show, :update, :destroy]
-      # Rutas para orders
+      # Rutas de productos
+      resources :products, only: [:index, :show, :create, :update, :destroy]
+
+      # Rutas de órdenes
       resources :orders, only: [:index, :show, :create, :update, :destroy]
+
+      # Rutas de usuario y perfil
+      get 'me', to: 'me#show'
+      put 'me', to: 'me#update'   # Agregar ruta para actualizar el perfil del usuario
+      patch 'me', to: 'me#update' # Permite actualizaciones parciales
+      
+      resources :profiles, only: [:create, :show, :update, :destroy]
     end
   end
 

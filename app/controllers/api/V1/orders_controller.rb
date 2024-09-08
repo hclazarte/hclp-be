@@ -2,16 +2,23 @@ module Api
   module V1
     class OrdersController < ApplicationController
       before_action :set_order, only: [:show, :update, :destroy]
+      before_action :doorkeeper_authorize!
+      before_action :set_profile, only: [:create]
 
       # GET /api/v1/orders
       def index
-        @orders = Order.all
-        render json: @orders
+        orders = Order.includes(:order_items).all
+        render json: orders, include: [:order_items]
       end
 
       # GET /api/v1/orders/:id
       def show
-        render json: @order
+        order = Order.includes(:order_items).find(params[:id])
+        if order
+          render json: order, include: [:order_items]
+        else
+          render json: { error: 'Order not found' }, status: :not_found
+        end
       end
 
       # POST /api/v1/orders
@@ -45,8 +52,13 @@ module Api
         @order = Order.find(params[:id])
       end
 
+      def set_profile
+        @profile = Profile.find_by(id: params[:order][:profile_id])
+        render json: { error: 'Profile not found' }, status: :not_found unless @profile
+      end    
+
       def order_params
-        params.require(:order).permit(:profile_id, :status, :total, :date)
+        params.require(:order).permit(:status, :total, :date, :profile_id, order_items_attributes: [:product_id, :quantity, :price])
       end
     end
   end
