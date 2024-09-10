@@ -24,6 +24,9 @@ gem 'doorkeeper'
 # Habilitar cross domains
 gem 'rack-cors', :require => 'rack/cors'
 
+# Conectar a MongoDB
+gem 'mongoid', '~> 7.5'
+
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
 
