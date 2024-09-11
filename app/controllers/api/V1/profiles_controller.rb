@@ -2,16 +2,26 @@ module Api
   module V1
     class ProfilesController < ActionController::API
       before_action :set_profile, only: [:show, :update, :destroy]
-      before_action :authenticate_profile!
 
+      # No autenticación requerida para la creación de un perfil
+      # El index y show pueden seguir sin autenticación según tu necesidad
+
+      def index
+        profiles = Profile.all
+        render json: profiles
+      end
+
+      # Permitir la creación de un perfil sin autenticación
       def create
         @profile = Profile.new(profile_params)
+      
         if @profile.save
           render json: @profile, status: :created
         else
           render json: @profile.errors, status: :unprocessable_entity
         end
       end
+      
 
       def show
         render json: @profile
@@ -29,14 +39,6 @@ module Api
         @profile.destroy
         head :no_content
       end
-      
-      def current_profile
-        if current_profile
-          render json: current_profile
-        else
-          render json: { error: 'No autenticado' }, status: :unauthorized
-        end
-      end
 
       private
 
@@ -45,8 +47,8 @@ module Api
       end
 
       def profile_params
-        params.require(:profile).permit(:full_name, :email, :phone, :address, :city, :state, :postal_code, :password)
-      end
+        params.require(:profile).permit(:full_name, :email, :phone, :address, :city, :state, :postal_code, :password, :password_confirmation)
+      end        
     end
   end
 end

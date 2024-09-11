@@ -16,14 +16,11 @@ Rails.application.routes.draw do
       get 'me', to: 'me#show'
       put 'me', to: 'me#update'   # Agregar ruta para actualizar el perfil del usuario
       patch 'me', to: 'me#update' # Permite actualizaciones parciales
-      
-      resources :profiles, only: [:create, :show, :update, :destroy]
+
+      # Agregar todas las acciones para profiles, incluido index
+      resources :profiles, only: [:index, :create, :show, :update, :destroy]
     end
   end
 
   use_doorkeeper
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Defines the root path route ("/")
-  # root "articles#index"
 end
