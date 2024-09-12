@@ -21,6 +21,10 @@ module HclpBe
           credentials: true # Esto es opcional, se puede omitir si no necesitas enviar cookies o credenciales
       end
     end
+    # Desactivar el generador de Mongoid para tareas de migración
+    config.generators do |g|
+      g.orm :active_record
+    end
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

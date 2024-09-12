@@ -12,6 +12,10 @@ Rails.application.routes.draw do
       # Rutas de órdenes
       resources :orders, only: [:index, :show, :create, :update, :destroy]
 
+      # Rutas de mis órdenes
+      get 'my_orders', to: 'my_orders#index'
+      post 'my_orders', to: 'my_orders#create'
+
       # Rutas de usuario y perfil
       get 'me', to: 'me#show'
       put 'me', to: 'me#update'   # Agregar ruta para actualizar el perfil del usuario
