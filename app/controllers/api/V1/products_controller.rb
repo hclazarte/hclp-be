@@ -4,10 +4,15 @@ module Api
       before_action :doorkeeper_authorize!
       before_action :set_product, only: [:show, :update, :destroy]
 
-      # GET /api/v1/products
+      # GET /api/v1/products?name=sofa
       def index
-        @products = Product.all
-        render json: @products
+        if params[:name].present?
+          # Utiliza LIKE para buscar coincidencias parciales en el campo 'name'
+          products = Product.where('UPPER(name) LIKE ?', "%#{params[:name].upcase}%")
+        else
+          products = Product.all
+        end
+        render json: products
       end
 
       # GET /api/v1/products/:id
