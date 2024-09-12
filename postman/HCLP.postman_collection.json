@@ -42,11 +42,13 @@
 								{
 									"key": "username",
 									"value": "hector@example.com",
+									"description": "fulano@example.com",
 									"type": "text"
 								},
 								{
 									"key": "password",
 									"value": "nueva_contraseña",
+									"description": "password123",
 									"type": "text"
 								},
 								{
@@ -140,7 +142,24 @@
 					"name": "GetProducts",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "{{server}}/api/v1/products?name=purificador",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"products"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "purificador"
+								}
+							]
+						}
 					},
 					"response": []
 				},
@@ -149,6 +168,15 @@
 					"request": {
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"name\": \"Lámpara de Mesa Moderna\",\n        \"description\": \"Lámpara de mesa con diseño moderno, ideal para salones o dormitorios.\",\n        \"price\": 34.99,\n        \"stock\": 20,\n        \"category\": \"Decoración\",\n        \"image_url\": \"http://ejemplo.com/lampara.jpg\"\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{server}}/api/v1/products",
 							"host": [
@@ -186,6 +214,40 @@
 							}
 						},
 						"url": {
+							"raw": "{{server}}/api/v1/orders?profile_id=2",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "profile_id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PostOrders",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"order\": {\n    \"status\": \"pending\",\n    \"total\": 150.00,\n    \"date\": \"2024-09-09T12:00:00Z\",\n    \"profile_id\": 1,\n    \"order_items_attributes\": [\n      {\n        \"product_id\": 2,\n        \"quantity\": 1,\n        \"price\": 50.00\n      },\n      {\n        \"product_id\": 4,\n        \"quantity\": 1,\n        \"price\": 50.00\n      }\n    ]\n  }\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
 							"raw": "{{server}}/api/v1/orders",
 							"host": [
 								"{{server}}"
@@ -200,19 +262,150 @@
 					"response": []
 				},
 				{
-					"name": "PostOrders",
+					"name": "New Request",
 					"request": {
-						"method": "POST",
+						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{server}}/api/v1/orders",
+							"raw": "{{server}}/api/v1/orders/6",
 							"host": [
 								"{{server}}"
 							],
 							"path": [
 								"api",
 								"v1",
-								"orders"
+								"orders",
+								"6"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Profiles",
+			"item": [
+				{
+					"name": "GetProfiles",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/api/v1/profiles",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"profiles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PostProfiles",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"profile\": {\n    \"full_name\": \"Juan Pérez\",\n    \"email\": \"juan.perez@example.com\",\n    \"phone\": \"987654321\",\n    \"address\": \"Avenida Siempre Viva 742\",\n    \"city\": \"Barcelona\",\n    \"state\": \"Cataluña\",\n    \"postal_code\": \"08001\",\n    \"password\": \"securePassword456\",\n    \"password_confirmation\": \"securePassword456\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/v1/profiles",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"profiles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteRequest",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/api/v1/profiles/43",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"profiles",
+								"43"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "MisOrdenes",
+			"item": [
+				{
+					"name": "MisOrdenes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/api/v1/my_orders",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"my_orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "MisOrdenes",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"order\": {\n    \"status\": \"pending\",\n    \"total\": 100.00,\n    \"date\": \"2024-09-12T12:00:00Z\",\n    \"order_items_attributes\": [\n      {\n        \"product_id\": 1,\n        \"quantity\": 2,\n        \"price\": 50.00\n      }\n    ]\n  }\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/v1/my_orders",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"my_orders"
 							]
 						}
 					},
