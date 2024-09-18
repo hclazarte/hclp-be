@@ -9,6 +9,9 @@ Bundler.require(*Rails.groups)
 module HclpBe
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
+    Encoding.default_external = Encoding::UTF_8
+    Encoding.default_internal = Encoding::UTF_8
+
     config.load_defaults 7.0
 
     config.middleware.insert_before 0, Rack::Cors do

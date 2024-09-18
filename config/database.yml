@@ -23,7 +23,7 @@ default: &default
   host: hyperion.infomovil.com.bo
   port: 1521
   encoding: utf8
-  service_name: orclpdb
+  service_name: HCLP_DEV
 
 development:
   <<: *default
