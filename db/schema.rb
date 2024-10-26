@@ -31,7 +31,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_22_222646) do
     t.string "token", null: false
     t.string "refresh_token"
     t.integer "expires_in", precision: 38
-    t.string "scopes", default: "public"
+    t.string "scopes"
     t.datetime "created_at", null: false
     t.datetime "revoked_at"
     t.string "previous_refresh_token", default: ""
@@ -71,7 +71,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_22_222646) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "products", force: :cascade do |t|
+  create_table "products", id: false, force: :cascade do |t|
     t.string "name"
     t.text "description"
     t.decimal "price", precision: 10, scale: 2
@@ -96,7 +96,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_22_222646) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "related_products", force: :cascade do |t|
+  create_table "related_products", id: false, force: :cascade do |t|
     t.string "relationship_type", default: "Relacionado"
     t.integer "product_id", precision: 38, null: false
     t.integer "related_product_id", precision: 38, null: false
@@ -108,6 +108,4 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_22_222646) do
 
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
-  add_foreign_key "related_products", "products"
-  add_foreign_key "related_products", "products", column: "related_product_id"
 end
