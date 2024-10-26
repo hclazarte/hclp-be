@@ -29,3 +29,7 @@
 /config/master.key
 /public/packs
 /node_modules
+
+# Ignorar Configuraciones de MAC
+.DS_Store
+
