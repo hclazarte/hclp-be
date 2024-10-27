@@ -6,10 +6,17 @@ Este proyecto es el backend para la maqueta y prototipo inicial de una plataform
 
 ## Información del Curso
 
+### Curso 1: PROGRAMMING THE INTERNET (CSE642)
 - **Universidad:** Broward International University
 - **Maestría:** Ciencias de Ingeniería de Software Informático
-- **Curso:** PROGRAMMING THE INTERNET (CSE642)
 - **Tarea:** Desarrollo del Backend para la Plataforma eCommerce. Implementación de una API Restful utilizando Ruby on Rails.
+- **Profesor:** PHD Cristian Gabriel Zambrano Vega
+- **Alumno:** Ing. Héctor Cristóbal Lazarte
+
+### Curso 2: OBJECT-ORIENTED PROGRAMMING (CSE641)
+- **Universidad:** Broward International University
+- **Maestría:** Ciencias de Ingeniería de Software Informático
+- **Tarea:** Implementación orientada a objetos de la plataforma eCommerce. Desarrollar clases y métodos en Ruby para una estructura orientada a objetos.
 - **Profesor:** PHD Cristian Gabriel Zambrano Vega
 - **Alumno:** Ing. Héctor Cristóbal Lazarte
 
@@ -20,38 +27,83 @@ El objetivo de este proyecto es desarrollar el backend para una plataforma eComm
 - **Ruby on Rails**: Para la construcción de la API Restful.
 - **ORACLE**: Para la base de datos.
 
-## Detalles de Implementación
+## Modelos de la Aplicación
 
-### Modelos
+### Perfil de Usuario (`Profile`)
+Almacena la información del usuario, incluyendo:
+- **full_name**: Nombre completo del usuario.
+- **email**: Dirección de correo del usuario.
+- **user_role**: Rol del usuario en la plataforma (por ejemplo, cliente o administrador).
+- **preferencias de notificación**: Como `prefers_email`, `prefers_sms`, `prefers_in_app`.
 
-Descripción de los modelos utilizados en el proyecto:
+### Pedido (`Order`)
+Representa un pedido realizado por el usuario:
+- **profile_id**: Referencia al perfil del usuario.
+- **status**: Estado del pedido (por ejemplo, "pendiente", "completado").
+- **total**: Total del pedido.
+- **date**: Fecha del pedido.
 
-- **Profile**: Utilizado para almacenar información del usuario como nombre, email, etc. Relacionado con otros modelos como `Orders` para representar pedidos realizados por el usuario.
-- **Order**: Representa un pedido, asociado a un `Profile` y contiene detalles como estado del pedido, total, y fecha.
-- **RelatedProducts**: Modelo para representar productos relacionados a un producto principal.
+### Productos Relacionados (`RelatedProducts`)
+Modelo para representar productos relacionados con un producto principal:
+- **product_id**: Producto principal.
+- **related_product_id**: Producto relacionado.
+- **relationship_type**: Tipo de relación (por ejemplo, "Relacionado").
 
-### Vistas
+### Producto (`Product`)
+Almacena la información de cada producto:
+- **name**: Nombre del producto.
+- **description**: Descripción detallada del producto.
+- **price**: Precio.
+- **stock**: Cantidad en inventario.
+- **category**: Categoría del producto.
+- **discount**: Descuento aplicado (si corresponde).
+- **imágenes**: Relación con `ProductImages`.
 
-Descripción de cómo se implementan las vistas y qué tecnologías se utilizan [Frontend](https://github.com/hclazarte/hclp-online).
+### Imágenes de Productos (`ProductImages`)
+Contiene las imágenes asociadas a un producto:
+- **product_id**: Relación con el producto.
+- **image_url**: URL de la imagen.
 
-### Autenticación
+### Carrito de Compras (`Cart`) y Artículos del Carrito (`CartItems`)
+Permite al usuario seleccionar productos antes de realizar un pedido:
+- **Cart**: Representa el carrito de un usuario (con `profile_id` y `status`).
+- **CartItems**: Contiene los productos en el carrito, con `product_id` y `quantity`.
 
-Detalles sobre cómo se implementa la autenticación:
+### Pago (`Payment`)
+Información sobre el pago de un pedido:
+- **order_id**: Relación con el pedido.
+- **method**: Método de pago (tarjeta de crédito, PayPal, etc.).
+- **status**: Estado del pago.
+- **amount**: Monto del pago.
 
-- Utiliza `Doorkeeper` para OAuth 2.0, permitiendo autenticación segura y proporcionando tokens a los clientes.
-- La configuración incluye scopes específicos para proteger los endpoints y asegurar que los tokens sean generados con los permisos correctos.
+### Envío (`Shipment`)
+Información del envío de un pedido:
+- **order_id**: Relación con el pedido.
+- **address**: Dirección completa de entrega.
+- **status**: Estado del envío.
+- **tracking_number**: Número de seguimiento.
 
-### Seguridad
+### Notificaciones (`Notification`)
+Envía notificaciones al usuario:
+- **profile_id**: Usuario al que se notifica.
+- **message**: Contenido de la notificación.
+- **delivery_method**: Método de entrega (in_app, email, SMS).
+- **status**: Estado de la notificación.
 
-Medidas de seguridad implementadas:
-
-- Uso de `bcrypt` para hashing de contraseñas, asegurando que las contraseñas de los usuarios no se almacenen en texto plano.
-- Configuración de políticas CORS para limitar los dominios que pueden interactuar con la API.
-- Validaciones estrictas en los modelos para prevenir inyecciones SQL y otros ataques comunes.
+### Solicitudes de Devolución (`ReturnRequests`)
+Permite gestionar devoluciones de productos:
+- **profile_id**: Usuario que solicita la devolución.
+- **order_id**: Pedido asociado a la solicitud.
+- **product_id**: Producto a devolver.
+- **reason**: Motivo de la devolución.
+- **status**: Estado de la solicitud.
 
 ## Instalación y Configuración
 
-Sigue los siguientes pasos para configurar y ejecutar el backend localmente:
+### Requisitos Previos
+- Tener instalado **Ruby on Rails** y **Oracle** para la base de datos.
+
+### Pasos de Instalación
 
 1. **Clonar el repositorio:**
 

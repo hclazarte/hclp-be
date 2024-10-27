@@ -1,6 +1,7 @@
 class Product < ApplicationRecord
   has_many :related_products
   has_many :related_to_products, through: :related_products, source: :related_product
+  has_many :product_images, dependent: :destroy
 
   # Validaciones
   validates :name, presence: true
