@@ -3,6 +3,15 @@ class Product < ApplicationRecord
   has_many :related_to_products, through: :related_products, source: :related_product
   has_many :product_images, dependent: :destroy
 
+  # Métodos
+  def apply_discount(percentage)
+    self.price -= (self.price * (percentage / 100.0))
+  end
+
+  def display_details
+    "Name: #{name}, Price: #{price}"
+  end
+  
   # Validaciones
   validates :name, presence: true
   validates :price, numericality: { greater_than_or_equal_to: 0 }
