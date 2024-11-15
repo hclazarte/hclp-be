@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_11_15_161334) do
+ActiveRecord::Schema[7.0].define(version: 2024_11_15_182548) do
   create_table "cart_items", force: :cascade do |t|
     t.integer "cart_id", precision: 38
     t.integer "product_id", precision: 38
@@ -59,7 +59,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_15_161334) do
     t.string "scopes"
     t.datetime "created_at", null: false
     t.datetime "revoked_at"
-    t.string "previous_refresh_token", default: "", null: false
+    t.string "previous_refresh_token", default: ""
     t.index ["application_id"], name: "index_oauth_access_tokens_on_application_id"
     t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true
     t.index ["resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner_id"
@@ -125,6 +125,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_15_161334) do
     t.integer "parent_product_id", precision: 38
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "file_format"
+    t.integer "file_size", precision: 38
+    t.decimal "weight", precision: 10, scale: 2
+    t.string "dimensions"
   end
 
   create_table "profiles", force: :cascade do |t|
