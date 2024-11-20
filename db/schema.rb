@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_11_15_182548) do
+ActiveRecord::Schema[7.0].define(version: 2024_11_16_164903) do
   create_table "cart_items", force: :cascade do |t|
     t.integer "cart_id", precision: 38
     t.integer "product_id", precision: 38
@@ -24,6 +24,47 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_15_182548) do
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "electronic_invoices", force: :cascade do |t|
+    t.integer "codigo_sucursal", precision: 38, null: false
+    t.string "cuf", null: false
+    t.string "cufd", null: false
+    t.datetime "fecha_emision", null: false
+    t.string "codigo_cliente", null: false
+    t.integer "order_id", precision: 38, null: false
+    t.integer "codigo_metodo_pago", precision: 38, null: false
+    t.decimal "monto_total", precision: 15, scale: 2, null: false
+    t.decimal "monto_total_sujeto_iva", precision: 15, scale: 2, null: false
+    t.integer "codigo_moneda", precision: 38, null: false
+    t.decimal "tipo_cambio", precision: 10, scale: 5, null: false
+    t.decimal "monto_total_moneda", precision: 15, scale: 2, null: false
+    t.decimal "monto_gift_card", precision: 15, scale: 2, default: "0.0"
+    t.decimal "descuento_adicional", precision: 15, scale: 2, default: "0.0"
+    t.integer "codigo_excepcion", precision: 38, null: false
+    t.string "leyenda", null: false
+    t.string "usuario", null: false
+    t.integer "codigo_documento_sector", precision: 38, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["codigo_cliente"], name: "index_electronic_invoices_on_codigo_cliente"
+    t.index ["order_id"], name: "index_electronic_invoices_on_order_id"
+  end
+
+  create_table "invoice_details", force: :cascade do |t|
+    t.integer "electronic_invoice_id", precision: 38, null: false
+    t.string "actividad_economica", null: false
+    t.string "codigo_producto_sin", null: false
+    t.string "codigo_producto", null: false
+    t.string "descripcion", null: false
+    t.decimal "cantidad", precision: 10, scale: 5, null: false
+    t.integer "unidad_medida", precision: 38, null: false
+    t.decimal "precio_unitario", precision: 15, scale: 5, null: false
+    t.decimal "monto_descuento", precision: 15, scale: 2
+    t.decimal "sub_total", precision: 15, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["electronic_invoice_id"], name: "index_invoice_details_on_electronic_invoice_id"
   end
 
   create_table "notifications", force: :cascade do |t|
@@ -184,6 +225,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_15_182548) do
   add_foreign_key "cart_items", "carts"
   add_foreign_key "cart_items", "products"
   add_foreign_key "carts", "profiles"
+  add_foreign_key "electronic_invoices", "orders"
+  add_foreign_key "invoice_details", "electronic_invoices"
   add_foreign_key "notifications", "profiles"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
