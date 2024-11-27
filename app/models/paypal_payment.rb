@@ -1,5 +1,5 @@
 # app/models/paypal_payment.rb
-class PayPalPayment
+class PaypalPayment
   include PaymentProcess
 
   def start_payment(amount)
