@@ -5,6 +5,8 @@ class Product < ApplicationRecord
   has_many :product_images, dependent: :destroy
 
   # Validaciones
+  validates :name, presence: true
+  validates :price, numericality: { greater_than_or_equal_to: 0 }
   validates :stock, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   # Métodos públicos para encapsulamiento
@@ -13,9 +15,7 @@ class Product < ApplicationRecord
   end
 
   def price=(value)
-    raise ArgumentError, 'EL precio debe ser positivo' if value.to_f.negative?
-
-    write_attribute(:price, value)
+    write_attribute(:price, value.to_f) # Asegura que el valor sea float
   end
 
   def stock
@@ -23,14 +23,12 @@ class Product < ApplicationRecord
   end
 
   def stock=(value)
-    raise ArgumentError, 'El stock no puede ser negativo' if value.to_i.negative?
-
-    write_attribute(:stock, value)
+    write_attribute(:stock, value.to_i) # Asegura que el valor sea un entero
   end
 
- # Comportamientos comunes para productos
- def in_stock?
-  stock > 0
+  # Comportamientos comunes para productos
+  def in_stock?
+    stock > 0
   end
 
   def apply_discount(percentage)
