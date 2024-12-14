@@ -9,7 +9,11 @@ class InventoryManager
     raise NotImplementedError, "This method must be implemented in a subclass"
   end
 
-  def update_stock(product_id, new_stock)
-    raise NotImplementedError, "This method must be implemented in a subclass"
+  def update_stock(product_id, quantity)
+    product = Product.find(product_id)
+    raise InsufficientInventoryError if product.stock < quantity
+
+    product.update!(stock: product.stock - quantity)
+    puts "Inventario actualizado correctamente."
   end
 end

@@ -191,9 +191,3 @@ Inventory updated for event: inventory_updated, data: {:product_id=>456, :stock=
 
 3. **Notificaciones con Observer:**
    - Se diseñó un sistema extensible para añadir nuevos eventos y observadores fácilmente.
-
----
-
-## Licencia
-
-Este proyecto se distribuye bajo la licencia MIT.

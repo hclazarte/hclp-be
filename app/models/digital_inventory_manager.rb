@@ -10,8 +10,13 @@ class DigitalInventoryManager < InventoryManager
     puts "Removing digital product with ID: #{product_id}"
   end
 
-  def update_stock(product_id, new_stock)
-    # Lógica para actualizar el stock de un producto digital
-    puts "Updating stock for digital product ID #{product_id} to #{new_stock}"
+  def update_stock(product_id, quantity)
+    product = Product.find(product_id)
+    raise InsufficientInventoryError if product.stock < quantity
+
+    product.update!(stock: product.stock - quantity)
+    puts "Inventario actualizado correctamente."
+  rescue InsufficientInventoryError => e
+    puts e.message
   end
 end
