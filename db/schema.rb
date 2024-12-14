@@ -100,7 +100,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_16_164903) do
     t.string "scopes"
     t.datetime "created_at", null: false
     t.datetime "revoked_at"
-    t.string "previous_refresh_token", default: ""
+    t.string "previous_refresh_token", default: "", null: false
     t.index ["application_id"], name: "index_oauth_access_tokens_on_application_id"
     t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true
     t.index ["resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner_id"
