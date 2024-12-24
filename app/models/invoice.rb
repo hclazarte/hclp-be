@@ -1,3 +1,4 @@
 class Invoice < ApplicationRecord
-  # Aquí puedes añadir cualquier validación o relación si es necesario
+  has_many :invoice_details, dependent: :destroy
+  belongs_to :order
 end
