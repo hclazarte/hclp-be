@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_11_16_164903) do
+ActiveRecord::Schema[7.0].define(version: 2024_12_24_182527) do
   create_table "cart_items", force: :cascade do |t|
     t.integer "cart_id", precision: 38
     t.integer "product_id", precision: 38
@@ -64,7 +64,44 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_16_164903) do
     t.decimal "sub_total", precision: 15, scale: 2, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "invoice_id", precision: 38
     t.index ["electronic_invoice_id"], name: "index_invoice_details_on_electronic_invoice_id"
+    t.index ["invoice_id"], name: "index_invoice_details_on_invoice_id"
+  end
+
+  create_table "invoices", force: :cascade do |t|
+    t.string "nit_emisor"
+    t.string "razon_social_emisor"
+    t.string "municipio"
+    t.string "telefono"
+    t.string "numero_factura"
+    t.string "cuf"
+    t.string "cufd"
+    t.integer "codigo_sucursal", precision: 38
+    t.string "direccion"
+    t.integer "codigo_punto_venta", precision: 38
+    t.datetime "fecha_emision"
+    t.string "nombre_razon_social"
+    t.integer "codigo_tipo_documento_identidad", precision: 38
+    t.string "numero_documento"
+    t.string "complemento"
+    t.string "codigo_cliente"
+    t.integer "codigo_metodo_pago", precision: 38
+    t.string "numero_tarjeta"
+    t.decimal "monto_total", precision: 15, scale: 2
+    t.decimal "monto_total_sujeto_iva", precision: 15, scale: 2
+    t.integer "codigo_moneda", precision: 38
+    t.decimal "tipo_cambio", precision: 10, scale: 5
+    t.decimal "monto_total_moneda", precision: 15, scale: 2
+    t.decimal "monto_gift_card", precision: 15, scale: 2
+    t.decimal "descuento_adicional", precision: 15, scale: 2
+    t.integer "codigo_excepcion", precision: 38
+    t.string "cafc"
+    t.string "leyenda"
+    t.string "usuario"
+    t.integer "codigo_documento_sector", precision: 38
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "notifications", force: :cascade do |t|
@@ -100,7 +137,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_16_164903) do
     t.string "scopes"
     t.datetime "created_at", null: false
     t.datetime "revoked_at"
-    t.string "previous_refresh_token", default: "", null: false
+    t.string "previous_refresh_token", default: ""
     t.index ["application_id"], name: "index_oauth_access_tokens_on_application_id"
     t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true
     t.index ["resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner_id"
@@ -227,6 +264,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_16_164903) do
   add_foreign_key "carts", "profiles"
   add_foreign_key "electronic_invoices", "orders"
   add_foreign_key "invoice_details", "electronic_invoices"
+  add_foreign_key "invoice_details", "invoices"
   add_foreign_key "notifications", "profiles"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
