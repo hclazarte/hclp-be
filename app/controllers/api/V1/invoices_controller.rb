@@ -50,8 +50,8 @@ class Api::V1::InvoicesController < ApplicationController
   end
 
   def index
-    invoices = Invoice.all
-    render json: invoices, status: :ok
+    invoices = Invoice.includes(:invoice_details).all
+    render json: invoices.as_json(include: :invoice_details), status: :ok
   end
 
   def show
