@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_12_24_182527) do
+ActiveRecord::Schema[7.0].define(version: 2024_12_24_211745) do
   create_table "cart_items", force: :cascade do |t|
     t.integer "cart_id", precision: 38
     t.integer "product_id", precision: 38
@@ -102,6 +102,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_24_182527) do
     t.integer "codigo_documento_sector", precision: 38
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "order_id", precision: 38
+    t.index ["order_id"], name: "index_invoices_on_order_id"
   end
 
   create_table "notifications", force: :cascade do |t|
@@ -265,6 +267,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_24_182527) do
   add_foreign_key "electronic_invoices", "orders"
   add_foreign_key "invoice_details", "electronic_invoices"
   add_foreign_key "invoice_details", "invoices"
+  add_foreign_key "invoices", "orders"
   add_foreign_key "notifications", "profiles"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
