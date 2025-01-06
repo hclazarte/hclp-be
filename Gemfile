@@ -53,6 +53,8 @@ group :development, :test do
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
   # para hacer pruebas unitarias
   gem 'rspec-rails', '~> 6.0'
+  # para crear objetos desde los tests
+  gem 'factory_bot_rails'
 end
 
 group :development do

@@ -68,16 +68,15 @@ Rails.application.configure do
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-  address: "email-smtp.sa-east-1.amazonaws.com",  # Dirección del servidor SMTP
-  port: 25,                                       # Puerto del servidor
-  domain: "hclp.online",                          # Dominio de la aplicación
-  user_name: ENV["SMTP_USERNAME"],                # Nombre de usuario (usualmente tu correo electrónico)
-  password: ENV["SMTP_PASSWORD"],                 # Contraseña del correo
-  authentication: "login",                        # Método de autenticación
-  enable_starttls_auto: true                      # Habilitar TLS
-}
+    address: "email-smtp.sa-east-1.amazonaws.com",  # Dirección del servidor SMTP
+    port: 25,                                       # Puerto del servidor
+    domain: "hclp.online",                          # Dominio de la aplicación
+    user_name: ENV["SMTP_USERNAME"],                # Nombre de usuario (usualmente tu correo electrónico)
+    password: ENV["SMTP_PASSWORD"],                 # Contraseña del correo
+    authentication: "login",                        # Método de autenticación
+    enable_starttls_auto: true                      # Habilitar TLS
+  }
 
-# Configurar el host para los enlaces en correos
-config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
-
+  # Configurar el host para los enlaces en correos
+  config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 end
