@@ -14,6 +14,15 @@ class Profile < ApplicationRecord
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :password, presence: true, length: { minimum: 6 }, if: -> { new_record? || password.present? }
   validates :password_confirmation, presence: true, if: -> { password.present? }
+  
+  # Valores por defecto
+  attribute :two_factor_enabled, :boolean, default: false
+
+  # Asegúrate de que el atributo se inicialice en 0
+  after_initialize do
+    self.failed_otp_attempts ||= 0
+    self.two_factor_enabled ||= false
+  end
 
   # Encapsulación de email
   def email
@@ -53,5 +62,22 @@ class Profile < ApplicationRecord
     self.otp_token = nil
     self.otp_expires_at = nil
     save!
+  end
+
+  # Incrementar intentos fallidos y verificar si se excedió el límite
+  def increment_failed_otp_attempts
+    self.failed_otp_attempts += 1
+    save!
+  end
+
+  # Restablecer intentos fallidos
+  def reset_failed_otp_attempts
+    self.failed_otp_attempts = 0
+    save!
+  end
+
+  # Verificar si el usuario excedió el límite
+  def exceeded_max_otp_attempts?
+    self.failed_otp_attempts >= Rails.application.config.two_factor_max_attempts
   end
 end
