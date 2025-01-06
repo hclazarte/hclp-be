@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
-  get 'login', to: 'sessions#new'
-  post 'login', to: 'sessions#create'
-  delete 'logout', to: 'sessions#destroy'
+  post '/session', to: 'sessions#create'
+  post '/session/verify', to: 'sessions#verify_otp'
+  delete 'logout', to: 'sessions#destroy'  
 
   # Rutas de la API
   namespace :api do
@@ -28,6 +28,4 @@ Rails.application.routes.draw do
       resources :invoices, only: [:index, :show, :create]
     end
   end
-
-  use_doorkeeper
 end

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Tu código de autenticación</title>
+  </head>
+  <body>
+    <h1>Hola <%= @profile.full_name %>,</h1>
+    <p>
+      Este es tu código de autenticación:
+      <strong style="font-size: 24px; color: #4CAF50;"><%= @otp_token %></strong>
+    </p>
+    <p>
+      Por seguridad, este código expirará en 10 minutos. Si no lo solicitaste,
+      por favor ignora este correo.
+    </p>
+    <p>
+      Saludos,<br>
+      <em>El equipo de soporte</em>
+    </p>
+  </body>
+</html>

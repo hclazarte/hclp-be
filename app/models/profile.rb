@@ -35,4 +35,23 @@ class Profile < ApplicationRecord
 
     write_attribute(:full_name, value)
   end
+
+  # Generar un token de 6 dígitos y guardarlo en el modelo
+  def generate_otp_token
+    self.otp_token = format('%06d', rand(1..999999))
+    self.otp_expires_at = 10.minutes.from_now
+    save!
+  end
+
+  # Verificar que el token sea válido y no esté expirado
+  def valid_otp_token?(token)
+    self.otp_token == token && self.otp_expires_at > Time.current
+  end
+
+  # Limpiar el token después de usarlo
+  def clear_otp_token
+    self.otp_token = nil
+    self.otp_expires_at = nil
+    save!
+  end
 end

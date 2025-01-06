@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_12_24_214334) do
+ActiveRecord::Schema[7.0].define(version: 2025_01_05_195419) do
   create_table "cart_items", force: :cascade do |t|
     t.integer "cart_id", precision: 38
     t.integer "product_id", precision: 38
@@ -199,6 +199,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_24_214334) do
     t.boolean "prefers_in_app"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "otp_token"
+    t.datetime "otp_expires_at"
   end
 
   create_table "related_products", force: :cascade do |t|
