@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::API
-  before_action :authenticate_resource_owner!
+  before_action :authenticate_resource_owner!, except: [:verify_email]
 
   private
 

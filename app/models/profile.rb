@@ -5,18 +5,25 @@ class Profile < ApplicationRecord
 
   # Enumeraciones
   enum user_role: { customer: 0, admin: 1, manager: 2 }
+  enum status: { pending: 0, verified: 1, suspended: 2 }
 
   # Autenticación
   has_secure_password
 
   # Validaciones
   validates :full_name, presence: true
-  validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :email, presence: true, uniqueness: { case_sensitive: false }, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :status, inclusion: { in: %w[pending verified suspended] }
   validates :password, presence: true, length: { minimum: 6 }, if: -> { new_record? || password.present? }
   validates :password_confirmation, presence: true, if: -> { password.present? }
   
   # Valores por defecto
   attribute :two_factor_enabled, :boolean, default: false
+
+  # Callbacks
+  # Almacena el email en minúsculas para evitar duplicados
+  before_save :downcase_email
+  before_create :generate_verification_token
 
   # Asegúrate de que el atributo se inicialice en 0
   after_initialize do
@@ -79,5 +86,28 @@ class Profile < ApplicationRecord
   # Verificar si el usuario excedió el límite
   def exceeded_max_otp_attempts?
     self.failed_otp_attempts >= Rails.application.config.two_factor_max_attempts
+  end
+
+  # Genera un token único para la verificación
+  def generate_verification_token
+    self.verification_token = SecureRandom.hex(10)
+    self.token_generated_at = Time.current
+  end
+
+  # Verifica si el token ha expirado (ejemplo: 24 horas)
+  def token_expired?
+    token_generated_at < 24.hours.ago
+  end
+
+  # Marca el email como verificado
+  def mark_as_verified
+    update(email_verified: true, status: 'verified', verification_token: nil, token_generated_at: nil)
+  end
+
+  private
+
+  # Convierte el email a minúsculas antes de guardarlo
+  def downcase_email
+    self.email = email.downcase
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_01_06_142703) do
+ActiveRecord::Schema[7.0].define(version: 2025_01_07_230620) do
   create_table "cart_items", force: :cascade do |t|
     t.integer "cart_id", precision: 38
     t.integer "product_id", precision: 38
@@ -203,6 +203,12 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_06_142703) do
     t.datetime "otp_expires_at"
     t.boolean "two_factor_enabled"
     t.integer "failed_otp_attempts", precision: 38, default: 0, null: false
+    t.integer "status", precision: 38, default: 0
+    t.boolean "email_verified", default: false
+    t.string "verification_token"
+    t.datetime "token_generated_at"
+    t.index ["email"], name: "index_profiles_on_email", unique: true
+    t.index ["verification_token"], name: "index_profiles_on_verification_token", unique: true
   end
 
   create_table "related_products", force: :cascade do |t|

@@ -2,6 +2,13 @@ Rails.application.routes.draw do
   post '/session', to: 'sessions#create'
   post '/session/verify', to: 'sessions#verify_otp'
   delete 'logout', to: 'sessions#destroy'  
+  
+  resources :new_profiles, only: [:create] do
+    collection do
+      get :verify_email
+      post :resend_verification
+    end
+  end
 
   # Rutas de la API
   namespace :api do

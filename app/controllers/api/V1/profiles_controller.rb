@@ -1,6 +1,7 @@
 module Api
   module V1
     class ProfilesController < ActionController::API
+      before_action :doorkeeper_authorize!
       before_action :set_profile, only: [:show, :update, :destroy]
 
       # No autenticación requerida para la creación de un perfil
