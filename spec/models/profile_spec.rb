@@ -7,14 +7,10 @@ RSpec.describe Profile, type: :model do
     it { should validate_uniqueness_of(:email).case_insensitive }
     it { should validate_presence_of(:password).on(:create) }
     it { should validate_length_of(:password).is_at_least(6) }
-  end
-
-  it 'valida el formato del correo' do
-    should allow_value('user@example.com').for(:email)
-    should_not allow_value('invalid_email').for(:email)
-  end
-
-  describe 'Validaciones' do
+    it 'valida el formato del correo' do
+      should allow_value('user@example.com').for(:email)
+      should_not allow_value('invalid_email').for(:email)
+    end
     it 'valida la presencia de password_confirmation si password está presente' do
       profile = Profile.new(password: 'password')
       profile.valid? # Esto corre las validaciones
@@ -81,4 +77,49 @@ RSpec.describe Profile, type: :model do
       expect(profile.two_factor_enabled).to eq(false)
     end
   end
+
+  describe '#generate_reset_token' do
+    let(:profile) { create(:profile) }
+    it 'generates a unique reset token and sets the timestamp' do
+      profile.generate_reset_token
+      expect(profile.reset_token).to be_present
+      expect(profile.reset_token_sent_at).to be_within(1.second).of(Time.current)
+    end
+
+    it 'saves the profile with the new token and timestamp' do
+      expect { profile.generate_reset_token }.to change { profile.reload.reset_token }.from(nil).to(be_present)
+    end
+  end
+
+  describe '#reset_token_expired?' do
+    let(:profile) { create(:profile) }
+    context 'when the token was generated more than 2 hours ago' do
+      it 'returns true' do
+        profile.update(reset_token_sent_at: 3.hours.ago)
+        expect(profile.reset_token_expired?).to be true
+      end
+    end
+
+    context 'when the token was generated within 2 hours' do
+      it 'returns false' do
+        profile.update(reset_token_sent_at: 1.hour.ago)
+        expect(profile.reset_token_expired?).to be false
+      end
+    end
+  end
+
+  describe '#clear_reset_token' do
+    let(:profile) { create(:profile) }
+    it 'clears the reset token and timestamp' do
+      profile.update(reset_token: 'test_token', reset_token_sent_at: Time.current)
+      profile.clear_reset_token
+      expect(profile.reset_token).to be_nil
+      expect(profile.reset_token_sent_at).to be_nil
+    end
+
+    it 'saves the profile after clearing the token and timestamp' do
+      profile.update(reset_token: 'test_token', reset_token_sent_at: Time.current)
+      expect { profile.clear_reset_token }.to change { profile.reload.reset_token }.from('test_token').to(nil)
+    end
+  end  
 end
