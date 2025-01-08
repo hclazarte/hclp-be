@@ -13,7 +13,6 @@ class Profile < ApplicationRecord
   # Validaciones
   validates :full_name, presence: true
   validates :email, presence: true, uniqueness: { case_sensitive: false }, format: { with: URI::MailTo::EMAIL_REGEXP }
-  validates :status, inclusion: { in: %w[pending verified suspended] }
   validates :password, presence: true, length: { minimum: 6 }, if: -> { new_record? || password.present? }
   validates :password_confirmation, presence: true, if: -> { password.present? }
   
@@ -29,27 +28,6 @@ class Profile < ApplicationRecord
   after_initialize do
     self.failed_otp_attempts ||= 0
     self.two_factor_enabled ||= false
-  end
-
-  # Encapsulación de email
-  def email
-    read_attribute(:email)
-  end
-
-  def email=(value)
-    raise ArgumentError, 'Formato de correo inválido' unless value.match?(URI::MailTo::EMAIL_REGEXP)
-
-    write_attribute(:email, value)
-  end
-
-  def full_name
-    read_attribute(:full_name)
-  end
-
-  def full_name=(value)
-    raise ArgumentError, 'El nombre completo es obligatorio' if value.blank?
-
-    write_attribute(:full_name, value)
   end
 
   # Generar un token de 6 dígitos y guardarlo en el modelo
@@ -108,6 +86,6 @@ class Profile < ApplicationRecord
 
   # Convierte el email a minúsculas antes de guardarlo
   def downcase_email
-    self.email = email.downcase
+    self.email = email&.downcase
   end
 end

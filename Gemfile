@@ -55,6 +55,8 @@ group :development, :test do
   gem 'rspec-rails', '~> 6.0'
   # para crear objetos desde los tests
   gem 'factory_bot_rails'
+  # para hacer validaciones
+  gem 'shoulda-matchers', '~> 5.0'
 end
 
 group :development do
