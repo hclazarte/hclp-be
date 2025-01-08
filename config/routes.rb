@@ -2,6 +2,8 @@ Rails.application.routes.draw do
   post '/session', to: 'sessions#create'
   post '/session/verify', to: 'sessions#verify_otp'
   delete 'logout', to: 'sessions#destroy'  
+  post 'reset_passwords/request_reset', to: 'reset_passwords#request_reset'
+  patch 'reset_passwords/update_password', to: 'reset_passwords#update_password'
   
   resources :new_profiles, only: [:create] do
     collection do

@@ -18,4 +18,15 @@ class ProfileMailer < ApplicationMailer
     )
     mail(to: @profile.email, subject: "Verifica tu correo electrónico")
   end
+
+  def reset_password_email
+    @profile = params[:profile]
+    @reset_link =url_for(
+      controller: 'reset_passwords',
+      action: 'update_password',
+      token: @profile.reset_token,
+      only_path: false
+    )
+    mail(to: @profile.email, subject: "Restablecimiento de Contraseña")
+  end
 end

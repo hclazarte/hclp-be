@@ -82,6 +82,24 @@ class Profile < ApplicationRecord
     update(email_verified: true, status: 'verified', verification_token: nil, token_generated_at: nil)
   end
 
+  def generate_reset_token
+    self.reset_token = SecureRandom.hex(20)
+    self.reset_token_sent_at = Time.current
+    save!
+  end
+
+  # Verificar si el token ha expirado (válido por 2 horas)
+  def reset_token_expired?
+    reset_token_sent_at < 2.hours.ago
+  end
+
+  # Limpiar el token después de un restablecimiento exitoso
+  def clear_reset_token
+    self.reset_token = nil
+    self.reset_token_sent_at = nil
+    save!
+  end
+
   private
 
   # Convierte el email a minúsculas antes de guardarlo
