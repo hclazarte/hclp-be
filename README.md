@@ -85,7 +85,7 @@ Los principales endpoints disponibles son:
 
 ## Tecnologías Utilizadas
 
-- **Ruby on Rails 7.2.2.1** (framework principal)
+- **Ruby on Rails 7.1.5.1** (framework principal)
 - **Oracle** (base de datos)
 - **Doorkeeper** (autenticación de usuarios con OAuth2)
 - **JWT** (manejo de tokens de autenticación)
