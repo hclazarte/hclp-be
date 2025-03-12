@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  paciente: one
+  medico: one
+  fecha: 2025-03-12
+  hora: 2025-03-12 15:08:00
+  estado: MyString
+
+two:
+  paciente: two
+  medico: two
+  fecha: 2025-03-12
+  hora: 2025-03-12 15:08:00
+  estado: MyString
