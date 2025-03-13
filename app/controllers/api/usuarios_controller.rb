@@ -1,10 +1,10 @@
 class Api::UsuariosController < ApplicationController
-  before_action :doorkeeper_authorize!, except: [:create]
-  before_action :set_usuario, only: [:show, :update, :destroy]
+  before_action :doorkeeper_authorize!, except: [ :create ]
+  before_action :set_usuario, only: [ :show, :update, :destroy ]
 
   # GET /api/usuarios
   def index
-    usuarios = Usuario.all
+    usuarios = Paciente.filter_by(params)
     render json: usuarios
   end
 

@@ -1,10 +1,10 @@
 class Api::PacientesController < ApplicationController
-  before_action :doorkeeper_authorize!, except: [:create]
-  before_action :set_paciente, only: [:show, :update, :destroy]
+  before_action :doorkeeper_authorize!, except: [ :create ]
+  before_action :set_paciente, only: [ :show, :update, :destroy ]
 
   # GET /api/pacientes
   def index
-    pacientes = Paciente.all
+    pacientes = Medico.filter_by(params)
     render json: pacientes
   end
 
@@ -25,10 +25,23 @@ class Api::PacientesController < ApplicationController
 
   # PUT /api/pacientes/:id
   def update
-    if @paciente.update(paciente_params)
-      render json: @paciente
+    paciente = Paciente.find(params[:id])
+    if paciente.update(paciente_params)
+      # Si el paciente tiene usuario, también actualizamos la información en usuarios
+      if paciente.usuario
+        paciente.usuario.update(
+          nombre: paciente.nombre,
+          apellido_paterno: paciente.apellido_paterno,
+          apellido_materno: paciente.apellido_materno,
+          cedula: paciente.cedula,
+          direccion: paciente.direccion,
+          movil: paciente.movil,
+          email: paciente.email
+        )
+      end
+      render json: paciente
     else
-      render json: @paciente.errors, status: :unprocessable_entity
+      render json: paciente.errors, status: :unprocessable_entity
     end
   end
 
@@ -46,5 +59,5 @@ class Api::PacientesController < ApplicationController
 
   def paciente_params
     params.require(:paciente).permit(:nombre, :apellido_paterno, :email, :password, :rol)
-  end  
+  end
 end

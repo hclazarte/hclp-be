@@ -1,5 +1,5 @@
 class Medico < ApplicationRecord
-  belongs_to :usuario
+  include QueryByExample
 
-  
+  belongs_to :usuario
 end

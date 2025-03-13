@@ -1,4 +1,6 @@
 class Usuario < ApplicationRecord
+  include QueryByExample
+
   has_secure_password
 
   enum rol: { admin: 0, medico: 1, paciente: 2 }

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_12_201635) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_13_162519) do
   create_table "citas", force: :cascade do |t|
     t.integer "paciente_id", precision: 38, null: false
     t.integer "medico_id", precision: 38, null: false
@@ -54,9 +54,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_12_201635) do
     t.string "telefono"
     t.string "telefono2"
     t.integer "estado", precision: 38
-    t.integer "usuario_id", precision: 38, null: false
+    t.integer "usuario_id", precision: 38
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "nombre"
+    t.string "apellido_paterno"
+    t.string "apellido_materno"
+    t.string "cedula"
+    t.string "direccion"
+    t.string "movil"
+    t.string "email"
     t.index ["usuario_id"], name: "index_medicos_on_usuario_id"
   end
 
@@ -76,14 +83,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_12_201635) do
 
   create_table "oauth_access_tokens", force: :cascade do |t|
     t.integer "resource_owner_id", precision: 38
-    t.integer "application_id", precision: 38, null: false
+    t.integer "application_id", precision: 38
     t.string "token", null: false
     t.string "refresh_token"
     t.integer "expires_in", precision: 38
     t.string "scopes"
     t.datetime "created_at", null: false
     t.datetime "revoked_at"
-    t.string "previous_refresh_token", default: "", null: false
+    t.string "previous_refresh_token", default: ""
     t.index ["application_id"], name: "index_oauth_access_tokens_on_application_id"
     t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true
     t.index ["resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner_id"
@@ -111,9 +118,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_12_201635) do
     t.integer "tipo_afiliado", precision: 38
     t.integer "tipo_sangre", precision: 38
     t.integer "estado", precision: 38
-    t.integer "usuario_id", precision: 38, null: false
+    t.integer "usuario_id", precision: 38
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "nombre"
+    t.string "apellido_paterno"
+    t.string "apellido_materno"
+    t.string "cedula"
+    t.string "direccion"
+    t.string "movil"
+    t.string "email"
     t.index ["usuario_id"], name: "index_pacientes_on_usuario_id"
   end
 

@@ -1,16 +1,16 @@
 class Api::MedicosController < ApplicationController
   before_action :doorkeeper_authorize!
-  before_action :set_medico, only: [:show, :update, :destroy, :horarios, :agregar_horario, :eliminar_horario, :especialidades, :agregar_especialidad, :eliminar_especialidad]
+  before_action :set_medico, only: [ :show, :update, :destroy, :horarios, :agregar_horario, :eliminar_horario, :especialidades, :agregar_especialidad, :eliminar_especialidad ]
 
   # GET /api/medicos
   def index
-    medicos = Medico.includes(:especialidades, :horario_medicos).all
-    render json: medicos, include: [:especialidades, :horario_medicos]
+    medicos = Medico.filter_by(params)
+    render json: medicos, include: [ :especialidades, :horario_medicos ]
   end
 
   # GET /api/medicos/:id
   def show
-    render json: @medico, include: [:especialidades, :horario_medicos]
+    render json: @medico, include: [ :especialidades, :horario_medicos ]
   end
 
   # POST /api/medicos
@@ -25,10 +25,23 @@ class Api::MedicosController < ApplicationController
 
   # PUT /api/medicos/:id
   def update
-    if @medico.update(medico_params)
-      render json: @medico
+    medico = Medico.find(params[:id])
+    if medico.update(medico_params)
+      # Si el medico tiene usuario, actualizamos en usuarios
+      if medico.usuario
+        medico.usuario.update(
+          nombre: medico.nombre,
+          apellido_paterno: medico.apellido_paterno,
+          apellido_materno: medico.apellido_materno,
+          cedula: medico.cedula,
+          direccion: medico.direccion,
+          movil: medico.movil,
+          email: medico.email
+        )
+      end
+      render json: medico
     else
-      render json: @medico.errors, status: :unprocessable_entity
+      render json: medico.errors, status: :unprocessable_entity
     end
   end
 
