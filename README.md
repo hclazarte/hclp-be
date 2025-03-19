@@ -7,7 +7,7 @@ Este es el backend del **Sistema de Gestión de Citas Médicas**, desarrollado e
 Asegúrate de tener instalados los siguientes paquetes antes de iniciar el proyecto:
 
 - **Ruby** (versión recomendada: 3.2.3)
-- **Rails** (versión recomendada: 7.2.2.1)
+- **Rails** (versión recomendada: 7.1.5.1)
 - **Bundler** (`gem install bundler`)
 - **Base de datos Oracle** con las credenciales configuradas
 - **Docker** (opcional, si deseas usar contenedores para la base de datos)
@@ -63,27 +63,33 @@ Los principales endpoints disponibles son:
 
 ### Autenticación (Doorkeeper)
 
-- `POST /oauth/token` → Obtiene un token de acceso.
-- `POST /oauth/revoke` → Revoca un token de acceso.
+- `POST /api/login` → Inicia sesión y obtiene un token.
+
+### Usuarios
+
+- `PATCH /usuarios/filtrar` → Filtra usuarios con 
+- `POST /usuarios` → Crea un nuevo usuarios.parámetros avanzados.
+- `GET /usuarios/{id}` → Obtiene un usuario por ID.
+- `PUT /usuarios/{id}` → Modifica un usuario.
+- `DELETE /usuarios/{id}` → Elimina un usuario.
 
 ### Pacientes
 
-- `GET /pacientes` → Lista todos los pacientes.
+- `PATCH /pacientes/filtrar` → Filtra pacientes con parámetros avanzados.
 - `POST /pacientes` → Crea un nuevo paciente.
 - `GET /pacientes/{id}` → Obtiene un paciente por ID.
 - `PUT /pacientes/{id}` → Modifica un paciente.
 - `DELETE /pacientes/{id}` → Elimina un paciente.
 
 ### Médicos
-
-- `GET /medicos` → Lista todos los médicos.
+- `PATCH /medicos/filtrar` → Filtra medicos con parámetros avanzados.
 - `POST /medicos` → Registra un nuevo médico.
 - `GET /medicos/{id}` → Obtiene un médico por ID.
 - `PUT /medicos/{id}` → Modifica un médico.
 - `DELETE /medicos/{id}` → Elimina un médico.
 
 ### Citas
-
+- `PATCH /citas/disponibles` → Consulta citas disponibles.
 - `GET /citas` → Lista todas las citas.
 - `POST /citas` → Crea una nueva cita.
 - `PUT /citas/{id}` → Modifica una cita.
@@ -101,18 +107,17 @@ La documentación de la API está disponible en Swagger. Para generar y acceder 
    ```
    http://localhost:3001/api-docs
    ```
+   O a la versión publicada:
+   ```
+   https://hclp.online/api-docs/index.html
+   ```
 
 ## Tecnologías Utilizadas
 
 - **Ruby on Rails 7.1.5.1** (framework principal)
 - **Oracle** (base de datos)
 - **Doorkeeper** (autenticación de usuarios con OAuth2)
-- **JWT** (manejo de tokens de autenticación)
 - **RSpec** (pruebas automatizadas)
 - **Rswag** (documentación API con Swagger)
-
-## Licencia
-
-Este proyecto está bajo la licencia MIT. Siéntete libre de contribuir y mejorar el código.
 
 Repositorio Oficial: [hclp-be](https://github.com/hclazarte/hclp-be)
