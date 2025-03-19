@@ -1,0 +1,109 @@
+require 'rails_helper'
+
+RSpec.describe "Pacientes API", type: :request do
+  let!(:usuario_admin) { create(:usuario, rol: :admin) }
+  let!(:pacientes) { create_list(:paciente, 3) }
+
+  let(:token) { Doorkeeper::AccessToken.create!(resource_owner_id: usuario_admin.id, scopes: 'read write') }
+  let(:headers) { { "Authorization" => "Bearer #{token.token}", "Content-Type" => "application/json" } }
+
+  describe "GET /api/pacientes" do
+    it "devuelve una lista de pacientes" do
+      get "/api/pacientes?&page=1&per_page=10", headers: headers
+
+      puts "RESPONSE BODY: #{response.body}"
+      expect(response).to have_http_status(:ok)
+      expect(JSON.parse(response.body)["results"].size).to eq(3)
+    end
+  end
+
+  describe "GET /api/pacientes/:id" do
+    let(:paciente) { pacientes.first }
+
+    it "devuelve la información de un paciente" do
+      get "/api/pacientes/#{paciente.id}", headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(JSON.parse(response.body)["id"]).to eq(paciente.id)
+    end
+
+    it "devuelve 404 si el paciente no existe" do
+      get "/api/pacientes/999999", headers: headers
+
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
+  describe "POST /api/pacientes" do
+    let(:valid_params) do
+      {
+        nombre: "Juan",
+        apellido_paterno: "Pérez",
+        apellido_materno: "Gómez",
+        cedula: "65498732",
+        direccion: "Calle Bolívar 789, La Paz",
+        movil: "+59176549876",
+        email: "juan.perez@example.com",
+        password: "password123",
+        rol: 2,
+        usuario_id: nil,
+        estado_civil: "casado",
+        ocupacion: "Ingeniero",
+        fecha_nacimiento: "1990-05-15",
+        lugar_nacimiento: "La Paz, Bolivia",
+        telefono: "+59122456789",
+        tipo_afiliado: "titular",
+        tipo_sangre: "orh_p",
+        estado: "alta"
+      }
+    end
+
+    it "crea un paciente con datos válidos" do
+      post "/api/pacientes", params: valid_params.to_json, headers: headers
+
+      expect(response).to have_http_status(:created)
+      expect(JSON.parse(response.body)["email"]).to eq("juan.perez@example.com")
+    end
+
+    it "retorna error si faltan datos" do
+      post "/api/pacientes", params: { nombre: "" }.to_json, headers: headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(JSON.parse(response.body)).to include("nombre", "apellido_paterno", "cedula", "fecha_nacimiento", "tipo_sangre")
+    end
+  end
+
+  describe "PUT /api/pacientes/:id" do
+    let(:paciente) { pacientes.first }
+
+    it "actualiza un paciente" do
+      put "/api/pacientes/#{paciente.id}", params: { nombre: "NuevoNombre" }.to_json, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(paciente.reload.nombre).to eq("NuevoNombre")
+    end
+
+    it "retorna error si el paciente no existe" do
+      put "/api/pacientes/999999", params: { usuario: { nombre: "NuevoNombre" } }.to_json, headers: headers
+
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
+  describe "DELETE /api/pacientes/:id" do
+    let(:paciente) { pacientes.last }
+
+    it "elimina un paciente" do
+      delete "/api/pacientes/#{paciente.id}", headers: headers
+
+      expect(response).to have_http_status(:no_content)
+      expect(Usuario.exists?(paciente.id)).to be_falsey
+    end
+
+    it "retorna error si el paciente no existe" do
+      delete "/api/pacientes/999999", headers: headers
+
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+end
