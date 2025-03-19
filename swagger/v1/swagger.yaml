@@ -1,0 +1,419 @@
+openapi: 3.0.1
+info:
+  title: API de Gestión de Citas Médicas
+  description: API para la gestión de usuarios, médicos, pacientes y citas
+  version: v1
+servers:
+  - url: http://localhost:3001/api
+    description: Servidor local
+security:
+  - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    Usuario:
+      type: object
+      properties:
+        id:
+          type: integer
+        nombre:
+          type: string
+        apellido_paterno:
+          type: string
+        email:
+          type: string
+      required:
+        - id
+        - nombre
+        - apellido_paterno
+        - email
+    Paciente:
+      type: object
+      properties:
+        id:
+          type: integer
+        nombre:
+          type: string
+        apellido_paterno:
+          type: string
+        email:
+          type: string
+        estado:
+          type: string
+      required:
+        - id
+        - nombre
+        - apellido_paterno
+        - email
+    Medico:
+      type: object
+      properties:
+        id:
+          type: integer
+        nombre:
+          type: string
+        apellido_paterno:
+          type: string
+        email:
+          type: string
+        registro_profesional:
+          type: string
+      required:
+        - id
+        - nombre
+        - apellido_paterno
+        - email
+        - registro_profesional
+    Cita:
+      type: object
+      properties:
+        id:
+          type: integer
+        fecha:
+          type: string
+          format: date
+        hora:
+          type: string
+        motivo:
+          type: string
+        estado:
+          type: string
+      required:
+        - id
+        - fecha
+        - hora
+        - motivo
+        - estado
+paths:
+  /usuarios:
+    get:
+      summary: Obtiene la lista de usuarios
+      tags:
+        - Usuarios
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de usuarios obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Usuario'
+    post:
+      summary: Crea un nuevo usuario
+      tags:
+        - Usuarios
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+      responses:
+        '201':
+          description: Usuario creado correctamente
+  /usuarios/{id}:
+    get:
+      summary: Obtiene un usuario por ID
+      tags:
+        - Usuarios
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Usuario encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        '404':
+          description: Usuario no encontrado
+    put:
+      summary: Actualiza un usuario
+      tags:
+        - Usuarios
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+      responses:
+        '200':
+          description: Usuario actualizado correctamente
+    delete:
+      summary: Elimina un usuario
+      tags:
+        - Usuarios
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Usuario eliminado correctamente
+  /pacientes:
+    get:
+      summary: Obtiene la lista de pacientes
+      tags:
+        - Pacientes
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de pacientes obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Paciente'
+    post:
+      summary: Crea un nuevo paciente
+      tags:
+        - Pacientes
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Paciente'
+      responses:
+        '201':
+          description: Paciente creado correctamente
+  /pacientes/{id}:
+    get:
+      summary: Obtiene un paciente por ID
+      tags:
+        - Pacientes
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Paciente encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Paciente'
+    put:
+      summary: Actualiza un paciente
+      tags:
+        - Pacientes
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Paciente'
+      responses:
+        '200':
+          description: Paciente actualizado correctamente
+    delete:
+      summary: Elimina un paciente
+      tags:
+        - Pacientes
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Paciente eliminado correctamente
+  /medicos:
+    get:
+      summary: Obtiene la lista de médicos
+      tags:
+        - Médicos
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de médicos obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Medico'
+    post:
+      summary: Crea un nuevo médico
+      tags:
+        - Médicos
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Medico'
+      responses:
+        '201':
+          description: Médico creado correctamente
+  /medicos/{id}:
+    get:
+      summary: Obtiene un médico por ID
+      tags:
+        - Médicos
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Médico encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Medico'
+    put:
+      summary: Actualiza un médico
+      tags:
+        - Médicos
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Medico'
+      responses:
+        '200':
+          description: Médico actualizado correctamente
+    delete:
+      summary: Elimina un médico
+      tags:
+        - Médicos
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Médico eliminado correctamente
+  /citas:
+    get:
+      summary: Obtiene la lista de citas
+      tags:
+        - Citas
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de citas obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cita'
+    post:
+      summary: Crea una nueva cita
+      tags:
+        - Citas
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cita'
+      responses:
+        '201':
+          description: Cita creada correctamente
+  /citas/{id}:
+    get:
+      summary: Obtiene una cita por ID
+      tags:
+        - Citas
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Cita encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cita'
+    delete:
+      summary: Cancela una cita
+      tags:
+        - Citas
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Cita cancelada correctamente
