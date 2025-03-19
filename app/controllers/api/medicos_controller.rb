@@ -1,4 +1,5 @@
 class Api::MedicosController < ApplicationController
+  skip_before_action :verify_authenticity_token, only: [:create]
   before_action :doorkeeper_authorize!
   before_action :set_medico,
                 only: %i[show update destroy horarios agregar_horario eliminar_horario especialidades agregar_especialidad
@@ -158,7 +159,9 @@ class Api::MedicosController < ApplicationController
       :cedula,
       :direccion,
       :movil,
-      :email
+      :email,
+      medico_especialidades_attributes: [:especialidad_id],
+      horario_medicos_attributes: %i[dia hora_inicio hora_fin]
     )
   end
 

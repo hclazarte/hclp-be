@@ -5,7 +5,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     get 'ping', to: 'general#ping'
-    get 'citas/disponibles', to: 'citas#disponibles'
+    post 'citas/disponibles', to: 'citas#disponibles'
 
     patch 'usuarios/filtrar', to: 'usuarios#filtrar'
     resources :usuarios, only: %i[show create update destroy]

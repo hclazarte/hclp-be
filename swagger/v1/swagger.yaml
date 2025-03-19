@@ -49,37 +49,91 @@ components:
     Medico:
       type: object
       properties:
+        id:
+          type: integer
+          example: 1
         nombre:
           type: string
+          example: "Gregory"
         apellido_paterno:
           type: string
+          example: "House"
+        apellido_materno:
+          type: string
+          example: "MD"
+        cedula:
+          type: string
+          example: "00112233"
+        direccion:
+          type: string
+          example: "Princeton-Plainsboro, New Jersey"
+        movil:
+          type: string
+          example: "+59170000001"
         email:
           type: string
+          example: "house@example.com"
         registro_profesional:
           type: string
+          example: "MEDHOUSE123"
+        telefono:
+          type: string
+          example: "+59122000001"
+        telefono2:
+          type: string
+          example: "+59122000002"
+        estado:
+          type: integer
+          description: "0 = Alta, 1 = Baja"
+          example: 0
+        especialidades:
+          type: array
+          items:
+            $ref: '#/components/schemas/Especialidad'
+        horario_medicos:
+          type: array
+          items:
+            $ref: '#/components/schemas/HorarioMedico'
       required:
         - nombre
         - apellido_paterno
-        - email
+        - cedula
         - registro_profesional
+        - estado
     Cita:
       type: object
       properties:
+        id:
+          type: integer
+          example: 1001
+        paciente_id:
+          type: integer
+          example: 25
+        medico_id:
+          type: integer
+          example: 3
+        especialidad_id:
+          type: integer
+          example: 1
         fecha:
           type: string
           format: date
+          example: "2025-03-20"
         hora:
           type: string
-        motivo:
-          type: string
+          example: "08:00"
         estado:
           type: string
+          enum: [0,1,2,3]
+          example: 1
       required:
-        - id
+        - paciente_id
+        - medico_id
+        - especialidad_id
         - fecha
         - hora
-        - motivo
         - estado
+
 paths:
   /ping:
     get:
@@ -111,10 +165,11 @@ paths:
               properties:
                 email:
                   type: string
-                  format: email
+                  example: "walter.fuertes@hclp.online"
                 password:
                   type: string
                   format: password
+                  example: "adminSecure123"
               required:
                 - email
                 - password
@@ -608,6 +663,65 @@ paths:
       responses:
         '204':
           description: Médico eliminado correctamente
+  /citas/disponibles:
+    post:
+      summary: Obtiene las citas disponibles para una especialidad
+      tags:
+        - Citas
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                especialidad_id:
+                  type: integer
+                  example: 1
+      responses:
+        '200':
+          description: Lista de citas disponibles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    medico_id:
+                      type: integer
+                      example: 3
+                    especialidad_id:
+                      type: integer
+                      example: 1
+                    medico_nombre:
+                      type: string
+                      example: "Gregory House"
+                    especialidad:
+                      type: string
+                      example: "Diagnóstico Médico"
+                    dia:
+                      type: string
+                      example: "Lunes"
+                    hora:
+                      type: string
+                      example: "08:00"
+                    fecha:
+                      type: string
+                      format: date
+                      example: "2025-03-20"
+        '404':
+          description: Especialidad no encontrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Especialidad no encontrada"
   /citas:
     get:
       summary: Obtiene la lista de citas
