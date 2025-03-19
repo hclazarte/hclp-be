@@ -1,13 +1,16 @@
 class Api::PacientesController < ApplicationController
-  before_action :doorkeeper_authorize!, except: [ :create ]
-  before_action :set_paciente, only: [ :show, :update, :destroy ]
+  before_action :doorkeeper_authorize!, except: [:create]
+  before_action :set_paciente, only: %i[show update destroy]
 
   # GET /api/pacientes
-  def index
+  def filtrar
     page = params[:page].to_i.positive? ? params[:page].to_i : 1
     per_page = params[:per_page].to_i.positive? ? params[:per_page].to_i : 1
 
-    pacientes_query = params[:paciente].present? ? Paciente.filter_by(paciente_params) : Paciente.all
+    # Extraer los filtros dentro de "usuario"
+    paciente_filtros = params.dig(:paciente) || {}
+
+    pacientes_query = params[:paciente].present? ? Paciente.filter_by(paciente_filtros) : Paciente.all
     total_count = pacientes_query.count # Total de registros
 
     pacientes = pacientes_query.limit(per_page).offset((page - 1) * per_page) # Paginación manual
@@ -33,20 +36,19 @@ class Api::PacientesController < ApplicationController
     if paciente.usuario_id.present?
       paciente = Usuario.find_by(id: paciente.usuario_id)
 
-      if paciente
-        # Si algún campo en usuario es distinto, actualizarlo
-        usuario.update!(
-          nombre: paciente.nombre,
-          apellido_paterno: paciente.apellido_paterno,
-          apellido_materno: paciente.apellido_materno,
-          cedula: paciente.cedula,
-          direccion: paciente.direccion,
-          movil: paciente.movil,
-          email: paciente.email
-        )
-      else
-        return render json: { error: "Usuario no encontrado" }, status: :unprocessable_entity
-      end
+      return render json: { error: 'Usuario no encontrado' }, status: :unprocessable_entity unless paciente
+
+      # Si algún campo en usuario es distinto, actualizarlo
+      usuario.update!(
+        nombre: paciente.nombre,
+        apellido_paterno: paciente.apellido_paterno,
+        apellido_materno: paciente.apellido_materno,
+        cedula: paciente.cedula,
+        direccion: paciente.direccion,
+        movil: paciente.movil,
+        email: paciente.email
+      )
+
     end
 
     if paciente.save
@@ -55,7 +57,6 @@ class Api::PacientesController < ApplicationController
       render json: paciente.errors, status: :unprocessable_entity
     end
   end
-
 
   # PUT /api/pacientes/:id
   def update
@@ -110,7 +111,7 @@ class Api::PacientesController < ApplicationController
       :telefono,
       :tipo_afiliado,
       :tipo_sangre,
-      :estado,
+      :estado
     )
   end
 end

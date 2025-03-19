@@ -1,13 +1,17 @@
 class Api::UsuariosController < ApplicationController
-  before_action :doorkeeper_authorize!, except: [ :create ]
-  before_action :set_usuario, only: [ :show, :update, :destroy ]
+  before_action :doorkeeper_authorize!, except: [:create]
+  before_action :set_usuario, only: %i[show update destroy]
 
-  # GET /api/usuarios
-  def index
+  # PATCH /api/usuarios/filtrar
+  def filtrar
     page = params[:page].to_i.positive? ? params[:page].to_i : 1
-    per_page = params[:per_page].to_i.positive? ? params[:per_page].to_i : 1
+    per_page = params[:per_page].to_i.positive? ? params[:per_page].to_i : 15
 
-    usuarios_query = params[:usuario].present? ? Usuario.filter_by(usuario_params) : Usuario.all
+    # Extraer los filtros dentro de "usuario"
+    usuario_filtros = params.dig(:usuario) || {}
+
+    # Filtrar si hay datos en "usuario", sino devolver todos
+    usuarios_query = usuario_filtros.present? ? Usuario.filter_by(usuario_filtros) : Usuario.all
     total_count = usuarios_query.count # Total de registros
 
     usuarios = usuarios_query.limit(per_page).offset((page - 1) * per_page) # Paginación manual
@@ -57,6 +61,7 @@ class Api::UsuariosController < ApplicationController
   end
 
   def usuario_params
-    params.require(:usuario).permit(:nombre, :apellido_paterno, :apellido_materno, :cedula, :direccion, :movil, :email, :password, :rol)
+    params.require(:usuario).permit(:nombre, :apellido_paterno, :apellido_materno, :cedula, :direccion, :movil, :email,
+                                    :password, :rol)
   end
 end

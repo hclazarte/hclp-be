@@ -1,9 +1,11 @@
 class Api::MedicosController < ApplicationController
   before_action :doorkeeper_authorize!
-  before_action :set_medico, only: [ :show, :update, :destroy, :horarios, :agregar_horario, :eliminar_horario, :especialidades, :agregar_especialidad, :eliminar_especialidad ]
+  before_action :set_medico,
+                only: %i[show update destroy horarios agregar_horario eliminar_horario especialidades agregar_especialidad
+                         eliminar_especialidad]
 
-  # GET /api/medicos
-  def index
+  # PATCH /api/medicos/filtrar
+  def filtrar
     page = params[:page].to_i.positive? ? params[:page].to_i : 1
     per_page = params[:per_page].to_i.positive? ? params[:per_page].to_i : 1
 
@@ -16,13 +18,13 @@ class Api::MedicosController < ApplicationController
       page: page,
       per_page: per_page,
       count: total_count,
-      results: medicos.as_json(include: [ :horario_medicos, :especialidades ])
+      results: medicos.as_json(include: %i[horario_medicos especialidades])
     }
   end
 
   # GET /api/medicos/:id
   def show
-    render json: @medico, include: [ :especialidades, :horario_medicos ]
+    render json: @medico, include: %i[especialidades horario_medicos]
   end
 
   # POST /api/medicos
@@ -33,20 +35,19 @@ class Api::MedicosController < ApplicationController
     if medico.usuario_id.present?
       usuario = Usuario.find_by(id: medico.usuario_id)
 
-      if usuario
-        # Si algún campo en usuario es distinto, actualizarlo
-        usuario.update!(
-          nombre: medico.nombre,
-          apellido_paterno: medico.apellido_paterno,
-          apellido_materno: medico.apellido_materno,
-          cedula: medico.cedula,
-          direccion: medico.direccion,
-          movil: medico.movil,
-          email: medico.email
-        )
-      else
-        return render json: { error: "Usuario no encontrado" }, status: :unprocessable_entity
-      end
+      return render json: { error: 'Usuario no encontrado' }, status: :unprocessable_entity unless usuario
+
+      # Si algún campo en usuario es distinto, actualizarlo
+      usuario.update!(
+        nombre: medico.nombre,
+        apellido_paterno: medico.apellido_paterno,
+        apellido_materno: medico.apellido_materno,
+        cedula: medico.cedula,
+        direccion: medico.direccion,
+        movil: medico.movil,
+        email: medico.email
+      )
+
     end
 
     if medico.save
@@ -67,12 +68,11 @@ class Api::MedicosController < ApplicationController
         end
       end
 
-      render json: medico, include: [ :especialidades, :horario_medicos ], status: :created
+      render json: medico, include: %i[especialidades horario_medicos], status: :created
     else
       render json: medico.errors, status: :unprocessable_entity
     end
   end
-
 
   # PUT /api/medicos/:id
   def update
@@ -90,7 +90,7 @@ class Api::MedicosController < ApplicationController
           email: medico.email
         )
       end
-      render json: medico, include: [ :especialidades, :horario_medicos ]
+      render json: medico, include: %i[especialidades horario_medicos]
     else
       render json: medico.errors, status: :unprocessable_entity
     end
@@ -158,7 +158,7 @@ class Api::MedicosController < ApplicationController
       :cedula,
       :direccion,
       :movil,
-      :email,
+      :email
     )
   end
 

@@ -6,6 +6,8 @@ info:
 servers:
   - url: http://localhost:3001/api
     description: Servidor local
+  - url: https://hclp.online/api
+    description: Servidor de prueba desarrollo
 security:
   - bearerAuth: []
 components:
@@ -17,24 +19,21 @@ components:
     Usuario:
       type: object
       properties:
-        id:
-          type: integer
         nombre:
           type: string
         apellido_paterno:
           type: string
         email:
           type: string
+        password:
+          type: string
       required:
-        - id
         - nombre
         - apellido_paterno
         - email
     Paciente:
       type: object
       properties:
-        id:
-          type: integer
         nombre:
           type: string
         apellido_paterno:
@@ -44,15 +43,12 @@ components:
         estado:
           type: string
       required:
-        - id
         - nombre
         - apellido_paterno
         - email
     Medico:
       type: object
       properties:
-        id:
-          type: integer
         nombre:
           type: string
         apellido_paterno:
@@ -62,7 +58,6 @@ components:
         registro_profesional:
           type: string
       required:
-        - id
         - nombre
         - apellido_paterno
         - email
@@ -70,8 +65,6 @@ components:
     Cita:
       type: object
       properties:
-        id:
-          type: integer
         fecha:
           type: string
           format: date
@@ -88,23 +81,125 @@ components:
         - motivo
         - estado
 paths:
-  /usuarios:
+  /ping:
     get:
-      summary: Obtiene la lista de usuarios
+      summary: Verifica si la API está activa
+      tags:
+        - General
+      responses:
+        '200':
+          description: La API está funcionando
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ok"
+  /login:
+    post:
+      summary: Inicia sesión y obtiene un token de acceso
+      tags:
+        - Autenticación
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: Inicio de sesión exitoso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                  token_type:
+                    type: string
+                    example: Bearer
+                  expires_in:
+                    type: integer
+        '401':
+          description: Credenciales incorrectas 
+  /usuarios/filtrar:
+    patch:
+      summary: Filtra usuarios con parámetros avanzados
       tags:
         - Usuarios
       security:
         - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: Número de la página a solicitar
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          description: Cantidad de registros por página
+          required: false
+          schema:
+            type: integer
+            default: 15
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                usuario:
+                  $ref: '#/components/schemas/Usuario'
+                  type: object
+                  properties:
+                    nombre:
+                      type: string
+                      description: Nombre
+                    apellido_paterno:
+                      type: string
+                      description: Apellido
+                    email:
+                      type: string
+                      description: Email
+                    password:
+                      type: string
+                      description: Password
       responses:
         '200':
           description: Lista de usuarios obtenida correctamente
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Usuario'
-    post:
+                type: object
+                properties:
+                  page:
+                    type: integer
+                  per_page:
+                    type: integer
+                  count:
+                    type: integer
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Usuario'
+  /usuarios:
+   post:
       summary: Crea un nuevo usuario
       tags:
         - Usuarios
@@ -115,7 +210,24 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Usuario'
+              type: object
+              properties:
+                usuario:
+                  $ref: '#/components/schemas/Usuario'
+                  type: object
+                  properties:
+                    nombre:
+                      type: string
+                      description: Nombre
+                    apellido_paterno:
+                      type: string
+                      description: Apellido
+                    email:
+                      type: string
+                      description: Email
+                    password:
+                      type: string
+                      description: Password
       responses:
         '201':
           description: Usuario creado correctamente
@@ -158,7 +270,24 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Usuario'
+              type: object
+              properties:
+                usuario:
+                  $ref: '#/components/schemas/Usuario'
+                  type: object
+                  properties:
+                    nombre:
+                      type: string
+                      description: Nombre
+                    apellido_paterno:
+                      type: string
+                      description: Apellido
+                    email:
+                      type: string
+                      description: Email
+                    password:
+                      type: string
+                      description: Password
       responses:
         '200':
           description: Usuario actualizado correctamente
@@ -177,13 +306,48 @@ paths:
       responses:
         '204':
           description: Usuario eliminado correctamente
-  /pacientes:
-    get:
-      summary: Obtiene la lista de pacientes
+  /pacientes/filtrar:
+    patch:
+      summary: Filtra pacientes por parámetros avanzados
       tags:
         - Pacientes
       security:
         - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: Número de la página a solicitar
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          description: Cantidad de registros por página
+          required: false
+          schema:
+            type: integer
+            default: 15
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                paciente:
+                  $ref: '#/components/schemas/Paciente'
+                  type: object
+                  properties:
+                    nombre:
+                      type: string
+                      description: Nombre
+                    apellido_paterno:
+                      type: string
+                      description: Apellido
+                    email:
+                      type: string
+                      description: Email
       responses:
         '200':
           description: Lista de pacientes obtenida correctamente
@@ -193,6 +357,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Paciente'
+  /pacientes:
     post:
       summary: Crea un nuevo paciente
       tags:
@@ -204,7 +369,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Paciente'
+              type: object
+              properties:
+                paciente:
+                  $ref: '#/components/schemas/Paciente'
+                  type: object
+                  properties:
+                    nombre:
+                      type: string
+                      description: Nombre
+                    apellido_paterno:
+                      type: string
+                      description: Apellido
+                    email:
+                      type: string
+                      description: Email
       responses:
         '201':
           description: Paciente creado correctamente
@@ -245,7 +424,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Paciente'
+              type: object
+              properties:
+                paciente:
+                  $ref: '#/components/schemas/Paciente'
+                  type: object
+                  properties:
+                    nombre:
+                      type: string
+                      description: Nombre
+                    apellido_paterno:
+                      type: string
+                      description: Apellido
+                    email:
+                      type: string
+                      description: Email
       responses:
         '200':
           description: Paciente actualizado correctamente
@@ -264,13 +457,48 @@ paths:
       responses:
         '204':
           description: Paciente eliminado correctamente
-  /medicos:
-    get:
+  /medicos/filtrar:
+    patch:
       summary: Obtiene la lista de médicos
       tags:
         - Médicos
       security:
         - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: Número de la página a solicitar
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          description: Cantidad de registros por página
+          required: false
+          schema:
+            type: integer
+            default: 15
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                medico:
+                  $ref: '#/components/schemas/Medico'
+                  type: object
+                  properties:
+                    nombre:
+                      type: string
+                      description: Nombre
+                    apellido_paterno:
+                      type: string
+                      description: Apellido
+                    email:
+                      type: string
+                      description: Email
       responses:
         '200':
           description: Lista de médicos obtenida correctamente
@@ -280,8 +508,9 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Medico'
+  /medicos:
     post:
-      summary: Crea un nuevo médico
+      summary: Crea un nuevo medico
       tags:
         - Médicos
       security:
@@ -291,7 +520,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Medico'
+              type: object
+              properties:
+                medico:
+                  $ref: '#/components/schemas/Medico'
+                  type: object
+                  properties:
+                    nombre:
+                      type: string
+                      description: Nombre
+                    apellido_paterno:
+                      type: string
+                      description: Apellido
+                    email:
+                      type: string
+                      description: Email
       responses:
         '201':
           description: Médico creado correctamente
@@ -332,7 +575,21 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Medico'
+              type: object
+              properties:
+                medico:
+                  $ref: '#/components/schemas/Medico'
+                  type: object
+                  properties:
+                    nombre:
+                      type: string
+                      description: Nombre
+                    apellido_paterno:
+                      type: string
+                      description: Apellido
+                    email:
+                      type: string
+                      description: Email
       responses:
         '200':
           description: Médico actualizado correctamente
