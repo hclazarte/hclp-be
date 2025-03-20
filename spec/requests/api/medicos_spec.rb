@@ -7,11 +7,10 @@ RSpec.describe "Medicos API", type: :request do
   let(:token) { Doorkeeper::AccessToken.create!(resource_owner_id: usuario_admin.id, scopes: 'read write') }
   let(:headers) { { "Authorization" => "Bearer #{token.token}", "Content-Type" => "application/json" } }
 
-  describe "GET /api/medicos" do
+  describe "PATCH /api/medicos" do
     it "devuelve una lista de médicos" do
-      get "/api/medicos?&page=1&per_page=10", headers: headers
+      patch "/api/medicos/filtrar?&page=1&per_page=10", headers: headers
 
-      puts "RESPONSE BODY: #{response.body}"
       expect(response).to have_http_status(:ok)
       expect(JSON.parse(response.body)["results"].size).to eq(3)
     end
