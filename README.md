@@ -95,6 +95,10 @@ Los principales endpoints disponibles son:
 - `PUT /citas/{id}` → Modifica una cita.
 - `DELETE /citas/{id}` → Cancela una cita.
 
+## Modelo Entidad-Relación
+
+![Modelo Entidad-Relacion](/doc/chart/EntidadRelacion.png)
+
 ## Documentación Swagger
 
 La documentación de la API está disponible en Swagger. Para generar y acceder a la documentación:
