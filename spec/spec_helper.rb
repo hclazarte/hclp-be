@@ -13,6 +13,12 @@
 # it.
 #
 # See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+require 'simplecov'
+SimpleCov.start 'rails' do
+  add_filter '/spec/'  # Excluye archivos de pruebas del reporte
+  add_filter '/config/' # Excluye archivos de configuración
+  add_filter '/vendor/' # Excluye dependencias de terceros
+end
 RSpec.configure do |config|
   config.before(:each, type: :request) do
     host! 'localhost:3001' # Define la URL base para los tests

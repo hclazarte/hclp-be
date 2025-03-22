@@ -36,3 +36,4 @@
 
 # Ignore rspec_results
 rspec_results.json
+coverage/
