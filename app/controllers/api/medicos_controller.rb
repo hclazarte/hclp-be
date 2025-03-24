@@ -36,6 +36,9 @@ class Api::MedicosController < ApplicationController
 
   # POST /api/medicos
   def create
+    params[:medico][:especialidades] ||= params[:especialidades]
+    params[:medico][:horarios] ||= params[:horario_medicos]
+
     medico = Medico.new(medico_params)
 
     # Si el usuario_id está presente, verificar y actualizar datos redundantes
@@ -84,8 +87,29 @@ class Api::MedicosController < ApplicationController
   # PUT /api/medicos/:id
   def update
     medico = Medico.find(params[:id])
+
     if medico.update(medico_params)
-      # Si el medico tiene usuario, actualizamos en usuario
+      # Actualizar especialidades si se mandaron
+      if params[:especialidades].present?
+        especialidad_ids = params[:especialidades].map { |esp| esp[:id] || esp["id"] }.uniq
+        medico.especialidades = Especialidad.where(id: especialidad_ids)
+      end
+
+      # Actualizar horarios si se mandaron
+      if params[:horario_medicos].present?
+        # Limpiar horarios anteriores y recrear
+        medico.horario_medicos.destroy_all
+
+        params[:horario_medicos].each do |h|
+          medico.horario_medicos.create!(
+            dia: h[:dia],
+            hora_inicio: h[:hora_inicio],
+            hora_fin: h[:hora_fin]
+          )
+        end
+      end
+
+      # Si tiene usuario asociado, actualizarlo también
       if medico.usuario
         medico.usuario.update(
           nombre: medico.nombre,
@@ -97,6 +121,7 @@ class Api::MedicosController < ApplicationController
           email: medico.email
         )
       end
+
       render json: medico, include: %i[especialidades horario_medicos]
     else
       render json: medico.errors, status: :unprocessable_entity
