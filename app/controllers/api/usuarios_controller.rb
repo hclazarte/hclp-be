@@ -5,22 +5,24 @@ class Api::UsuariosController < ApplicationController
   # PATCH /api/usuarios/filtrar
   def filtrar
     page = params[:page].to_i.positive? ? params[:page].to_i : 1
-    per_page = params[:per_page].to_i.positive? ? params[:per_page].to_i : 15
+    per_page = params[:per_page].to_i.positive? ? params[:per_page].to_i : 1
 
-    # Extraer los filtros dentro de "usuario"
-    usuario_filtros = params.dig(:usuario) || {}
+    base_query = params[:usuario].present? ? Usuario.filter_by(usuario_params) : Usuario.all
+    base_query = base_query.order(created_at: :desc)
 
-    # Filtrar si hay datos en "usuario", sino devolver todos
-    usuarios_query = usuario_filtros.present? ? Usuario.filter_by(usuario_filtros) : Usuario.all
-    total_count = usuarios_query.count # Total de registros
+    if params[:include].present?
+      included_id = params[:include].to_i
+      base_query = base_query.or(Usuario.where(id: included_id)) unless base_query.exists?(id: included_id)
+    end
 
-    usuarios = usuarios_query.limit(per_page).offset((page - 1) * per_page) # Paginación manual
+    total_count = base_query.distinct.count
+    usuarios = base_query.distinct.limit(per_page).offset((page - 1) * per_page)
 
     render json: {
       page: page,
       per_page: per_page,
       count: total_count,
-      results: usuarios
+      results: usuarios.as_json
     }
   end
 

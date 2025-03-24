@@ -10,10 +10,16 @@ class Api::MedicosController < ApplicationController
     page = params[:page].to_i.positive? ? params[:page].to_i : 1
     per_page = params[:per_page].to_i.positive? ? params[:per_page].to_i : 1
 
-    medicos_query = params[:medico].present? ? Medico.filter_by(medico_params) : Medico.all
-    total_count = medicos_query.count # Total de registros
+    base_query = params[:medico].present? ? Medico.filter_by(medico_params) : Medico.all
+    base_query = base_query.order(created_at: :desc)
 
-    medicos = medicos_query.limit(per_page).offset((page - 1) * per_page) # Paginación manual
+    if params[:include].present?
+      included_id = params[:include].to_i
+      base_query = base_query.or(Medico.where(id: included_id)) unless base_query.exists?(id: included_id)
+    end
+
+    total_count = base_query.distinct.count
+    medicos = base_query.distinct.limit(per_page).offset((page - 1) * per_page)
 
     render json: {
       page: page,

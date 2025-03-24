@@ -2,24 +2,27 @@ class Api::PacientesController < ApplicationController
   before_action :doorkeeper_authorize!, except: [:create]
   before_action :set_paciente, only: %i[show update destroy]
 
-  # GET /api/pacientes
+  # PATCH /api/pacientes/filtrar
   def filtrar
     page = params[:page].to_i.positive? ? params[:page].to_i : 1
     per_page = params[:per_page].to_i.positive? ? params[:per_page].to_i : 1
 
-    # Extraer los filtros dentro de "usuario"
-    paciente_filtros = params.dig(:paciente) || {}
+    base_query = params[:paciente].present? ? Paciente.filter_by(paciente_params) : Paciente.all
+    base_query = base_query.order(created_at: :desc)
 
-    pacientes_query = params[:paciente].present? ? Paciente.filter_by(paciente_filtros) : Paciente.all
-    total_count = pacientes_query.count # Total de registros
+    if params[:include].present?
+      included_id = params[:include].to_i
+      base_query = base_query.or(Paciente.where(id: included_id)) unless base_query.exists?(id: included_id)
+    end
 
-    pacientes = pacientes_query.limit(per_page).offset((page - 1) * per_page) # Paginación manual
+    total_count = base_query.distinct.count
+    pacientes = base_query.distinct.limit(per_page).offset((page - 1) * per_page)
 
     render json: {
       page: page,
       per_page: per_page,
       count: total_count,
-      results: pacientes
+      results: pacientes.as_json
     }
   end
 
