@@ -8,7 +8,7 @@ RSpec.describe "Medicos API", type: :request do
   let(:headers) { { "Authorization" => "Bearer #{token.token}", "Content-Type" => "application/json" } }
 
   describe "PATCH /api/medicos" do
-    it "devuelve una lista de médicos" do
+    it "devuelve una lista de medicos" do
       patch "/api/medicos/filtrar?&page=1&per_page=10", headers: headers
 
       expect(response).to have_http_status(:ok)
@@ -19,14 +19,14 @@ RSpec.describe "Medicos API", type: :request do
   describe "GET /api/medicos/:id" do
     let(:medico) { medicos.first }
 
-    it "devuelve la información de un médico" do
+    it "devuelve la información de un medico" do
       get "/api/medicos/#{medico.id}", headers: headers
 
       expect(response).to have_http_status(:ok)
       expect(JSON.parse(response.body)["id"]).to eq(medico.id)
     end
 
-    it "devuelve 404 si el médico no existe" do
+    it "devuelve 404 si el medico no existe" do
       get "/api/medicos/999999", headers: headers
 
       expect(response).to have_http_status(:not_found)
@@ -56,7 +56,7 @@ RSpec.describe "Medicos API", type: :request do
     }
     end
 
-    it "crea un médico con datos válidos" do
+    it "crea un medico con datos válidos" do
       post "/api/medicos", params: valid_params.to_json, headers: headers
 
       expect(response).to have_http_status(:created)
@@ -74,14 +74,14 @@ RSpec.describe "Medicos API", type: :request do
   describe "PUT /api/medicos/:id" do
     let(:medico) { medicos.first }
 
-    it "actualiza un médico" do
+    it "actualiza un medico" do
       put "/api/medicos/#{medico.id}", params: { nombre: "Dr. NuevoNombre" }.to_json, headers: headers
 
       expect(response).to have_http_status(:ok)
       expect(medico.reload.nombre).to eq("Dr. NuevoNombre")
     end
 
-    it "retorna error si el médico no existe" do
+    it "retorna error si el medico no existe" do
       put "/api/medicos/999999", params: { nombre: "Dr. NuevoNombre" }.to_json, headers: headers
 
       expect(response).to have_http_status(:not_found)
@@ -91,14 +91,14 @@ RSpec.describe "Medicos API", type: :request do
   describe "DELETE /api/medicos/:id" do
     let(:medico) { medicos.last }
 
-    it "elimina un médico" do
+    it "elimina un medico" do
       delete "/api/medicos/#{medico.id}", headers: headers
 
       expect(response).to have_http_status(:no_content)
       expect(Medico.exists?(medico.id)).to be_falsey
     end
 
-    it "retorna error si el médico no existe" do
+    it "retorna error si el medico no existe" do
       delete "/api/medicos/999999", headers: headers
 
       expect(response).to have_http_status(:not_found)

@@ -1,4 +1,4 @@
-require 'rails_helper'
+require 'swagger_helper'
 
 RSpec.describe "Pacientes API", type: :request do
   let!(:usuario_admin) { create(:usuario, rol: :admin) }
