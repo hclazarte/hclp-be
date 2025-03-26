@@ -1,4 +1,5 @@
 require 'swagger_helper'
+include MedicoParamsHelper
 
 RSpec.describe "Medicos API", type: :request do
   let!(:usuario_admin) { create(:usuario, rol: :admin) }
@@ -34,31 +35,9 @@ RSpec.describe "Medicos API", type: :request do
   end
 
   describe "POST /api/medicos" do
-    let(:valid_params) do
-      {
-        nombre: "Luis",
-        apellido_paterno: "Fernandez",
-        apellido_materno: "Lopez",
-        cedula: "87654321",
-        direccion: "Av. Principal 456, Cochabamba",
-        movil: "+59176543210",
-        email: "luis.fernandez@example.com",
-        registro_profesional: "MED123456",
-        telefono: "+59122567890",
-        especialidades: [
-            {
-                id: 1,
-                nombre: "Cardiología",
-                descripcion: "Especialidad en enfermedades del corazón"
-            }
-        ],
-        horario_medicos: []
-    }
-    end
-
     it "crea un medico con datos válidos" do
-      post "/api/medicos", params: valid_params.to_json, headers: headers
-
+      post "/api/medicos", params: medico_valid_params.to_json, headers: headers
+      
       expect(response).to have_http_status(:created)
       expect(JSON.parse(response.body)["email"]).to eq("luis.fernandez@example.com")
     end

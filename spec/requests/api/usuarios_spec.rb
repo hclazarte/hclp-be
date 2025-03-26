@@ -1,4 +1,5 @@
 require 'swagger_helper'
+include UsuarioParamsHelper
 
 RSpec.describe "Usuarios API", type: :request do
   let!(:usuario_admin) { create(:usuario, rol: :admin) }
@@ -35,20 +36,8 @@ RSpec.describe "Usuarios API", type: :request do
   end
 
   describe "POST /api/usuarios" do
-    let(:valid_params) do
-      {
-        usuario: {
-          nombre: "Carlos",
-          apellido_paterno: "Lopez",
-          email: "carlos@example.com",
-          password: "securepassword123",
-          rol: 1
-        }
-      }
-    end
-
     it "crea un usuario con datos válidos" do
-      post "/api/usuarios", params: valid_params.to_json, headers: headers
+      post "/api/usuarios", params: usuario_valid_params.to_json, headers: headers
 
       expect(response).to have_http_status(:created)
       expect(JSON.parse(response.body)["email"]).to eq("carlos@example.com")

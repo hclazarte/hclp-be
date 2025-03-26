@@ -1,4 +1,5 @@
 require 'swagger_helper'
+include PacienteParamsHelper
 
 RSpec.describe "Pacientes API", type: :request do
   let!(:usuario_admin) { create(:usuario, rol: :admin) }
@@ -34,31 +35,8 @@ RSpec.describe "Pacientes API", type: :request do
   end
 
   describe "POST /api/pacientes" do
-    let(:valid_params) do
-      {
-        nombre: "Juan",
-        apellido_paterno: "Pérez",
-        apellido_materno: "Gómez",
-        cedula: "65498732",
-        direccion: "Calle Bolívar 789, La Paz",
-        movil: "+59176549876",
-        email: "juan.perez@example.com",
-        password: "password123",
-        rol: 2,
-        usuario_id: nil,
-        estado_civil: "casado",
-        ocupacion: "Ingeniero",
-        fecha_nacimiento: "1990-05-15",
-        lugar_nacimiento: "La Paz, Bolivia",
-        telefono: "+59122456789",
-        tipo_afiliado: "titular",
-        tipo_sangre: "orh_p",
-        estado: "alta"
-      }
-    end
-
     it "crea un paciente con datos válidos" do
-      post "/api/pacientes", params: valid_params.to_json, headers: headers
+      post "/api/pacientes", params: paciente_valid_params.to_json, headers: headers
 
       expect(response).to have_http_status(:created)
       expect(JSON.parse(response.body)["email"]).to eq("juan.perez@example.com")
