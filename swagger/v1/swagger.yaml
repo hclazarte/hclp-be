@@ -21,119 +21,168 @@ components:
       properties:
         nombre:
           type: string
+          example: Juan
         apellido_paterno:
           type: string
+          example: Pérez
         email:
           type: string
+          format: email
+          example: juan.perez@example.com
         password:
           type: string
-      required:
-        - nombre
-        - apellido_paterno
-        - email
+          format: password
+          example: secret123
+        rol:
+          type: string
+          enum:
+            - admin
+            - medico
+            - paciente
+          example: paciente
     Paciente:
       type: object
       properties:
         nombre:
           type: string
+          example: María
         apellido_paterno:
           type: string
-        email:
+          example: González
+        cedula:
           type: string
+          example: 12345678
+        fecha_nacimiento:
+          type: string
+          format: date
+          example: 1990-05-15
+        tipo_sangre:
+          type: string
+          enum:
+            - orh_n
+            - orh_p
+            - arh_n
+            - arh_p
+            - brh_n
+            - brh_p
+            - abrh_n
+            - abrh_p
+          example: orh_p
+        estado_civil:
+          type: string
+          enum:
+            - soltero
+            - casado
+            - divorciado
+            - viudo
+          example: soltero
+        tipo_afiliado:
+          type: string
+          enum:
+            - titular
+            - beneficiario
+          example: titular
         estado:
           type: string
-      required:
-        - nombre
-        - apellido_paterno
-        - email
+          enum:
+            - alta
+            - baja
+          example: alta
+        usuario_id:
+          type: integer
+          example: 1
     Medico:
       type: object
       properties:
-        id:
-          type: integer
-          example: 1
         nombre:
           type: string
-          example: "Gregory"
+          example: Luis
         apellido_paterno:
           type: string
-          example: "House"
+          example: Fernández
         apellido_materno:
           type: string
-          example: "MD"
+          example: López
         cedula:
           type: string
-          example: "00112233"
+          example: 87654321
         direccion:
           type: string
-          example: "Princeton-Plainsboro, New Jersey"
+          example: Av. Principal 456, Cochabamba
         movil:
           type: string
-          example: "+59170000001"
-        email:
-          type: string
-          example: "house@example.com"
-        registro_profesional:
-          type: string
-          example: "MEDHOUSE123"
+          example: +59176543210
         telefono:
           type: string
-          example: "+59122000001"
-        telefono2:
+          example: +59122567890
+        email:
           type: string
-          example: "+59122000002"
+          format: email
+          example: luis.fernandez@example.com
+        registro_profesional:
+          type: string
+          example: MED123456
         estado:
+          type: string
+          enum:
+            - alta
+            - baja
+          example: alta
+        usuario_id:
           type: integer
-          description: "0 = Alta, 1 = Baja"
-          example: 0
+          example: 1
         especialidades:
           type: array
           items:
-            $ref: '#/components/schemas/Especialidad'
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              nombre:
+                type: string
+                example: Cardiología
+              descripcion:
+                type: string
+                example: Especialidad en enfermedades del corazón
         horario_medicos:
           type: array
           items:
-            $ref: '#/components/schemas/HorarioMedico'
-      required:
-        - nombre
-        - apellido_paterno
-        - cedula
-        - registro_profesional
-        - estado
+            type: object
+            properties:
+              dia:
+                type: string
+                example: lunes
+              hora_inicio:
+                type: string
+                example: 08:00
+              hora_fin:
+                type: string
+                example: 12:00
     Cita:
       type: object
       properties:
-        id:
-          type: integer
-          example: 1001
-        paciente_id:
-          type: integer
-          example: 25
-        medico_id:
-          type: integer
-          example: 3
-        especialidad_id:
-          type: integer
-          example: 1
         fecha:
           type: string
           format: date
-          example: "2025-03-20"
+          example: 2025-04-15
         hora:
           type: string
-          example: "08:00"
+          example: "14:30"
         estado:
           type: string
-          enum: [0,1,2,3]
+          enum:
+            - pendiente
+            - confirmada
+            - cancelada
+            - atendida
+          example: pendiente
+        paciente_id:
+          type: integer
           example: 1
-      required:
-        - paciente_id
-        - medico_id
-        - especialidad_id
-        - fecha
-        - hora
-        - estado
-
+        medico_id:
+          type: integer
+          example: 2
 paths:
   /ping:
     get:
