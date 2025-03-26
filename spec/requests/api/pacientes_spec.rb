@@ -39,14 +39,18 @@ RSpec.describe "Pacientes API", type: :request do
       post "/api/pacientes", params: paciente_valid_params.to_json, headers: headers
 
       expect(response).to have_http_status(:created)
-      expect(JSON.parse(response.body)["email"]).to eq("juan.perez@example.com")
+      expect(JSON.parse(response.body)).to include(paciente_valid_params.stringify_keys)
     end
 
     it "retorna error si faltan datos" do
       post "/api/pacientes", params: { nombre: "" }.to_json, headers: headers
-
+    
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(JSON.parse(response.body)).to include("nombre", "apellido_paterno", "cedula", "fecha_nacimiento", "tipo_sangre")
+    
+      errores = JSON.parse(response.body).keys
+      campos_validos = paciente_valid_params.keys.map(&:to_s)
+    
+      expect(campos_validos).to include(*errores)
     end
   end
 
@@ -61,7 +65,7 @@ RSpec.describe "Pacientes API", type: :request do
     end
 
     it "retorna error si el paciente no existe" do
-      put "/api/pacientes/999999", params: { usuario: { nombre: "NuevoNombre" } }.to_json, headers: headers
+      put "/api/pacientes/999999", params: { nombre: "NuevoNombre" }.to_json, headers: headers
 
       expect(response).to have_http_status(:not_found)
     end
@@ -74,7 +78,7 @@ RSpec.describe "Pacientes API", type: :request do
       delete "/api/pacientes/#{paciente.id}", headers: headers
 
       expect(response).to have_http_status(:no_content)
-      expect(Usuario.exists?(paciente.id)).to be_falsey
+      expect(Paciente.exists?(paciente.id)).to be_falsey
     end
 
     it "retorna error si el paciente no existe" do

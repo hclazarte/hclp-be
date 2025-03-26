@@ -8,8 +8,6 @@ module PacienteParamsHelper
       direccion: "Calle Bolívar 789, La Paz",
       movil: "+59176549876",
       email: "juan.perez@example.com",
-      password: "password123",
-      rol: 2,
       usuario_id: nil,
       estado_civil: "casado",
       ocupacion: "Ingeniero",

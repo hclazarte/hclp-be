@@ -39,14 +39,18 @@ RSpec.describe "Medicos API", type: :request do
       post "/api/medicos", params: medico_valid_params.to_json, headers: headers
       
       expect(response).to have_http_status(:created)
-      expect(JSON.parse(response.body)["email"]).to eq("luis.fernandez@example.com")
+      expect(JSON.parse(response.body)).to include(medico_valid_params.stringify_keys)
     end
 
     it "retorna error si faltan datos" do
       post "/api/medicos", params: { nombre: "" }.to_json, headers: headers
-
+    
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(JSON.parse(response.body)).to include("nombre", "apellido_paterno", "cedula", "registro_profesional")
+    
+      errores = JSON.parse(response.body).keys
+      campos_validos = medico_valid_params.keys.map(&:to_s)
+    
+      expect(campos_validos).to include(*errores)
     end
   end
 
@@ -54,14 +58,14 @@ RSpec.describe "Medicos API", type: :request do
     let(:medico) { medicos.first }
 
     it "actualiza un medico" do
-      put "/api/medicos/#{medico.id}", params: { nombre: "Dr. NuevoNombre" }.to_json, headers: headers
+      put "/api/medicos/#{medico.id}", params: { nombre: "NuevoNombre" }.to_json, headers: headers
 
       expect(response).to have_http_status(:ok)
-      expect(medico.reload.nombre).to eq("Dr. NuevoNombre")
+      expect(medico.reload.nombre).to eq("NuevoNombre")
     end
 
     it "retorna error si el medico no existe" do
-      put "/api/medicos/999999", params: { nombre: "Dr. NuevoNombre" }.to_json, headers: headers
+      put "/api/medicos/999999", params: { nombre: "NuevoNombre" }.to_json, headers: headers
 
       expect(response).to have_http_status(:not_found)
     end

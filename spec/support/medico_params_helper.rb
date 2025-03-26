@@ -11,7 +11,7 @@ module MedicoParamsHelper
       email: "luis.fernandez@example.com",
       registro_profesional: "MED123456",
       telefono: "+59122567890",
-      estado: 0,
+      estado: 'alta',
       especialidades: [],
       horario_medicos: []
     }
