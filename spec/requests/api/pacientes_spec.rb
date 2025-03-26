@@ -37,7 +37,7 @@ RSpec.describe "Pacientes API", type: :request do
   describe "POST /api/pacientes" do
     it "crea un paciente con datos válidos" do
       post "/api/pacientes", params: paciente_valid_params.to_json, headers: headers
-
+      
       expect(response).to have_http_status(:created)
       expect(JSON.parse(response.body)).to include(paciente_valid_params.stringify_keys)
     end

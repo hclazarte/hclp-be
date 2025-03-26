@@ -1,31 +1,32 @@
 # lib/tasks/generar_plantilla.rake
 namespace :generar do
-  desc "Genera una plantilla reemplazando entidades"
-  task :plantilla, [:singular, :plural] => :environment do |t, args|
-    unless args[:singular] && args[:plural]
-      puts "❌ Debes proporcionar el singular y plural. Ej: rake generar:plantilla[medico,medicos]"
+  desc "Genera una plantilla generalizada a partir de un archivo spec. Ej: rake generar:plantilla[Paciente]"
+  task :plantilla, [:entidad] => :environment do |t, args|
+    unless args[:entidad]
+      puts "❌ Debes proporcionar el nombre singular en mayúscula de la entidad. Ej: rake generar:plantilla[Paciente]"
       exit(1)
     end
 
-    singular = args[:singular]
-    plural = args[:plural]
+    Singular = args[:entidad]
+    Plural   = ActiveSupport::Inflector.pluralize(Singular)
+    singular = Singular.downcase
+    plural   = Plural.downcase
 
-    source_file = "#{plural}_spec.rb"
-    source_path = Rails.root.join("spec/requests/api", source_file)
-    target_path = Rails.root.join("generated/requests/api/plantilla.rb")
+    source_path = Rails.root.join("spec/requests/api/#{plural}_spec.rb")
+    target_path = Rails.root.join("generator/templates/#{plural}_template.rb")
 
     unless File.exist?(source_path)
-      puts "❌ No se encontró el archivo: #{source_path}"
+      puts "❌ No se encontró el archivo fuente: #{source_path}"
       exit(1)
     end
 
     content = File.read(source_path)
 
-    # Reemplazos simples (sin usar patrones complejos)
-    content.gsub!(plural, '{{Entidades}}')
-    content.gsub!(singular, '{{entidad}}')
-    content.gsub!(plural.capitalize, '{{Entidades}}')
-    content.gsub!(singular.capitalize, '{{Entidad}}')
+    # Reemplazos seguros: primero los plurales, luego los singulares
+    content.gsub!(plural, "{{p_entidad_p}}")
+    content.gsub!(singular, "{{s_entidad_s}}")
+    content.gsub!(Plural, "{{P_Entidad_p}}")
+    content.gsub!(Singular, "{{S_Entidad_s}}")
 
     FileUtils.mkdir_p(File.dirname(target_path))
     File.write(target_path, content)
